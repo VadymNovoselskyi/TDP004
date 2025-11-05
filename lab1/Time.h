@@ -5,13 +5,8 @@
 
 class Time
 {
-private:
-    int hour{};
-    int minute{};
-    int second{};
-
 public:
-    Time(int hour, int minute, int second);
+    Time(int hour = 0, int minute = 0, int second = 0);
     Time(std::string time_string);
     std::string to_string();
     std::string to_string(bool);
@@ -31,4 +26,9 @@ public:
     Time operator>=(Time const& rhs); 
     Time operator==(Time const& rhs); 
     Time operator!=(Time const& rhs); 
+
+private:
+    int hour{};
+    int minute{};
+    int second{};
 };
