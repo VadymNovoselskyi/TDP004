@@ -90,6 +90,21 @@ bool Time::is_am()
     return hour < 12;
 }
 
+int Time::get_hour()
+{
+    return hour;
+}
+int Time::get_minute()
+{
+    return minute;
+}
+int Time::get_second()
+{
+    return second;
+}
+
+
+
 int main()
 {
     return 0;
