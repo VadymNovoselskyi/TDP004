@@ -46,7 +46,7 @@ int main()
     cout << "Mata in steglängd: ";
     cin >> step;
 
-    while (step < 0.01)
+    while (step < 0.01f)
     {
         cout << "FEL: Steglängd måste vara minst 0.01" << endl;
         cout << "Mata in steglängd: ";
@@ -66,11 +66,11 @@ int main()
     cout << "MOMSTABELLEN" << endl;
     cout << "============" << endl;
 
-    cout << setfill(' ') << right << setw(12) << "Pris";
-    cout << setfill(' ') << right << setw(12) << "Moms";
-    cout << setfill(' ') << right << setw(20) << "Pris med moms" << endl;
+    cout << setw(12) << "Pris";
+    cout << setw(12) << "Moms";
+    cout << setw(20) << "Pris med moms" << endl;
 
-    cout << setfill('-') << right << setw(44) << "" << endl;
+    cout << setfill('-') << setw(44) << "" << endl;
 
     float price = first_price;
 
@@ -79,9 +79,9 @@ int main()
         float moms_amount = calc_moms(price, moms);
         float moms_price = calc_moms_price(price, moms);
 
-        cout << setfill(' ') << right << setw(12) << fixed << setprecision(2) << price;
-        cout << setfill(' ') << right << setw(12) << fixed << setprecision(2) << moms_amount;
-        cout << setfill(' ') << right << setw(20) << fixed << setprecision(2) << moms_price << endl;
+        cout << setfill(' ') << setw(12) << fixed << setprecision(2) << price;
+        cout << setw(12) << moms_amount;
+        cout << setw(20) << moms_price << endl;
         price += step;
     }
 
