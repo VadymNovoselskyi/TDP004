@@ -13,6 +13,12 @@ float calc_moms_price(float price, float moms)
     return price + calc_moms(price, moms);
 }
 
+float round(float var)
+{
+    float value = (int)(var * 100 + 0.5);
+    return (float)(value / 100);
+}
+
 int main()
 {
     float first_price{};
@@ -74,7 +80,7 @@ int main()
 
     float price = first_price;
 
-    while (price <= last_price)
+    while (round(price) <= round(last_price))
     {
         float moms_amount = calc_moms(price, moms);
         float moms_price = calc_moms_price(price, moms);
