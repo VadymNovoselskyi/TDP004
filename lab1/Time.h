@@ -1,34 +1,40 @@
-// Denna fil ska innehålla deklarationer för de typer och funktioner
-// som behövs
+#ifndef TIME_Hh
+#define TIME_Hh
 
 #include <string>
+#include <iostream>
 
 class Time
 {
 public:
     Time(int hour = 0, int minute = 0, int second = 0);
     Time(std::string time_string);
-    std::string to_string();
-    std::string to_string(bool);
+    std::string to_string(bool am_format = false) const;
 
-    bool is_am();
+    bool is_am() const;
 
-    int get_hour();
-    int get_minute();
-    int get_second();
+    int get_hour() const;
+    int get_minute() const;
+    int get_second() const;
 
-    Time operator++(int);
-    Time &operator++();
+    Time &operator++();   // pre-increment
+    Time operator++(int); // post-increment
 
-    Time operator<(Time const &rhs);
-    Time operator>(Time const &rhs);
-    Time operator<=(Time const &rhs);   
-    Time operator>=(Time const& rhs); 
-    Time operator==(Time const& rhs); 
-    Time operator!=(Time const& rhs); 
+    bool operator<(Time const &rhs) const;
+    bool operator>(Time const &rhs) const;
+    bool operator<=(Time const &rhs) const;
+    bool operator>=(Time const &rhs) const;
+    bool operator==(Time const &rhs) const;
+    bool operator!=(Time const &rhs) const;
 
 private:
     int hour{};
     int minute{};
     int second{};
+
+    void inc_second();
 };
+
+std::ostream &operator<<(std::ostream &os, Time const &rhs);
+
+#endif
