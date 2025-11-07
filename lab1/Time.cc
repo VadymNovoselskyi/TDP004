@@ -177,6 +177,7 @@ Time Time::operator++(int)
 
 bool Time::operator<(Time const &rhs) const
 {
+
     // compare hours
     if (this->hour < rhs.hour)
     {
@@ -187,7 +188,7 @@ bool Time::operator<(Time const &rhs) const
         return false;
     }
 
-    // compare minuites
+    // compare minutes
     else if (this->minute < rhs.minute)
     {
         return true;
@@ -210,7 +211,7 @@ bool Time::operator<(Time const &rhs) const
 
 bool Time::operator>(Time const &rhs) const
 {
-    return !(*this < rhs && *this == rhs);
+    return !(*this < rhs || *this == rhs);
 }
 
 bool Time::operator<=(Time const &rhs) const

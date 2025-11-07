@@ -1,5 +1,6 @@
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -21,6 +22,7 @@ float round(float var)
 
 int main()
 {
+    long int max_size = numeric_limits<streamsize>::max();
     float first_price{};
     float last_price{};
     float step{};
@@ -29,46 +31,55 @@ int main()
     cout << "INMATNINGSDEL" << endl;
     cout << "============" << endl;
 
-    cout << "Mata in första pris: ";
-    cin >> first_price;
-
-    while (first_price < 0)
+    do
     {
-        cout << "FEL: Första pris måste vara minst 0 (noll) kronor" << endl;
         cout << "Mata in första pris: ";
         cin >> first_price;
-    }
+        if (first_price < 0)
+        {
+            cout << "FEL: Första pris måste vara minst 0 (noll) kronor" << endl;
+        }
 
-    cout << "Mata in sista pris: ";
-    cin >> last_price;
+        cin.ignore(max_size, '\n');
+    } while (first_price < 0);
 
-    while (last_price < 0 || last_price < first_price)
+    do
     {
-        cout << "FEL: Sista pris måste vara minst 0 (noll) kronor och större än första priset" << endl;
         cout << "Mata in sista pris: ";
         cin >> last_price;
-    }
+        if (last_price < 0 || last_price < first_price)
+        {
+            cout << "FEL: Sista pris måste vara minst 0 (noll) kronor och större än första priset" << endl;
+        }
+        
+        cin.ignore(max_size, '\n');
+    } while (last_price < 0 || last_price < first_price);
 
-    cout << "Mata in steglängd: ";
-    cin >> step;
-
-    while (step < 0.01f)
+    do
     {
-        cout << "FEL: Steglängd måste vara minst 0.01" << endl;
         cout << "Mata in steglängd: ";
         cin >> step;
-    }
+        if (step < 0.01f)
+        {
+            cout << "FEL: Steglängd måste vara minst 0.01" << endl;
+        }
 
-    cout << "Mata in momsprocent: ";
-    cin >> moms;
+        cin.ignore(max_size, '\n');
+    } while (step < 0.01f);
 
-    while (moms < 0 || moms > 100)
+    do
     {
-        cout << "FEL: Momsprocenten behöver vara i intervallet 0 (noll) till 100 (hundra)" << endl;
         cout << "Mata in momsprocent: ";
         cin >> moms;
-    }
+        if (moms < 0 || moms > 100)
+        {
+            cout << "FEL: Momsprocenten behöver vara i intervallet 0 (noll) till 100 (hundra)" << endl;
+        }
 
+        cin.ignore(max_size, '\n');
+    } while (moms < 0 || moms > 100);
+
+    cout << endl;
     cout << "MOMSTABELLEN" << endl;
     cout << "============" << endl;
 
@@ -78,17 +89,20 @@ int main()
 
     cout << setfill('-') << setw(44) << "" << endl;
 
+    int step_amount = ((last_price -first_price) / step) + 1;
+
     float price = first_price;
 
-    while (round(price) <= round(last_price))
+    cout << setfill(' ') << fixed << setprecision(2);
+    for (int i=0; i<step_amount; i++)
     {
         float moms_amount = calc_moms(price, moms);
         float moms_price = calc_moms_price(price, moms);
 
-        cout << setfill(' ') << setw(12) << fixed << setprecision(2) << price;
+        cout << setw(12) << price;
         cout << setw(12) << moms_amount;
         cout << setw(20) << moms_price << endl;
-        price += step;
+        price = round(price + step);
     }
 
     return 0;
