@@ -4,12 +4,6 @@
 
 using namespace std;
 
-// Komplettering: Inkludera alla de biblotek ni använder.
-
-// Kommentar: Utskrifterna matchar inte körexemplet exakt. Nära nog att
-// jag släpper igenom det men håll i åtanke att det kan leda till
-// komplettering så det är viktigt att vara noga
-
 int main()
 {
      char character{};
