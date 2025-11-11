@@ -9,6 +9,55 @@ List::List() : first(nullptr)
 {
 }
 
+// Kopieringskonstruktor
+List::List(List const &other)
+{
+    vector<int> values = other.get_values_vector();
+    
+    Node* first_node = new List::Node{values[0], nullptr};
+    Node* previous_node = first_node;
+    this->first = first_node;
+
+    for (long unsigned int i = 1; i < values.size(); i++)
+    {
+    List::Node *new_node = new List::Node{values[i], nullptr};
+    previous_node->next = new_node;
+    }
+}
+
+// Kopieringstilldelningsoperator
+List &List::operator=(List const &rhs)
+{
+    List tmp {rhs};
+    this->first = tmp.first;
+
+    return *this; 
+}
+
+// Destruktor
+List::~List()
+{
+    Node* current_node = this->first;
+    while (current_node->next != nullptr)
+    {
+        Node* next = current_node->next;
+        delete current_node;
+        current_node = next;
+    }
+}
+
+// Flyttkonstruktor
+List::List(List &&other)
+{
+    this->first = other.first;
+    other.first = nullptr;
+}
+
+// Flytttilldelingsoperator
+List &List::operator=(List &&rhs)
+{
+}
+
 void List::insert(int value, List::Node *current_node)
 {
     // If trying to insert into a new list: Create it

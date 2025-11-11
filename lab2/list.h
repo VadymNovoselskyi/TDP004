@@ -20,9 +20,25 @@ private:
 public:
     List();
 
+    //Kopieringskonstruktor 
+    List(List const& other);
+
+    //Kopieringstilldelningsoperator
+    List& operator=(List const& rhs);
+
+    //Destruktor 
+    ~List();
+
+    //Flyttkonstruktor
+    List(List && other);
+
+    //Flytttilldelingsoperator
+    List& operator=(List && rhs);
+
     void insert(int value, List::Node *current_node = nullptr);
 
     void remove(int search, bool search_by_value = true);
+
 
     // Helper functions
     bool is_empty() const;
