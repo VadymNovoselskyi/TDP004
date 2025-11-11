@@ -84,10 +84,11 @@ int main() {
 
   cout << setfill(' ') << fixed << setprecision(2);
   for (int i = 0; i < step_amount; i++) {
-    float moms_amount = calc_moms(price_cents / 100.0f, moms);
-    float moms_price = calc_moms_price(price_cents / 100.0f, moms);
+    float price = price_cents / 100.0f;
+    float moms_amount = calc_moms(price, moms);
+    float moms_price = calc_moms_price(price, moms);
 
-    cout << setw(12) << price_cents / 100.0f;
+    cout << setw(12) << price;
     cout << setw(12) << moms_amount;
     cout << setw(20) << moms_price << endl;
     price_cents += step_cents;
