@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <sstream>
 #include "list.h"
 
 using namespace std;
@@ -12,56 +13,74 @@ List::List() : first(nullptr)
 // Kopieringskonstruktor
 List::List(List const &other)
 {
-    vector<int> values = other.get_values_vector();
-    
-    Node* first_node = new List::Node{values[0], nullptr};
-    Node* previous_node = first_node;
+    if (other.is_empty())
+    {
+        return;
+    }
+
+    Node *first_node = new List::Node{other.first->value, nullptr};
     this->first = first_node;
 
-    for (long unsigned int i = 1; i < values.size(); i++)
+    Node *previous_node = first_node;
+    Node *current_other = other.first->next;
+    while (current_other->next == nullptr)
     {
-    List::Node *new_node = new List::Node{values[i], nullptr};
-    previous_node->next = new_node;
+        List::Node *new_node = new List::Node{current_other->value, nullptr};
+        previous_node->next = new_node;
     }
 }
 
 // Kopieringstilldelningsoperator
 List &List::operator=(List const &rhs)
 {
-    List tmp {rhs};
-    this->first = tmp.first;
+    List tmp{rhs};
+    swap(this->first, tmp.first);
 
-    return *this; 
+    return *this;
 }
 
 // Destruktor
 List::~List()
 {
-    Node* current_node = this->first;
+    if (this->is_empty())
+    {
+        return;
+    }
+    std::cout << "Destructor: " << *this << std::endl;
+
+    Node *current_node = this->first;
     while (current_node->next != nullptr)
     {
-        Node* next = current_node->next;
+        std::cout << "In the while loop" << *this << std::endl;
+        Node *next = current_node->next;
         delete current_node;
         current_node = next;
     }
+
+    // Also delete the last node, as the loop stopped after reaching it
+    delete current_node;
 }
 
 // Flyttkonstruktor
 List::List(List &&other)
 {
-    this->first = other.first;
-    other.first = nullptr;
+    // Swap lists, so that this receives the wanted other.first
+    // While other gets the unwanted old list (if not nullptr)
+    // and we dont need to deal with it because it will destructure on out-of-scope
+    swap(this->first, other.first);
 }
 
 // Flytttilldelingsoperator
 List &List::operator=(List &&rhs)
 {
+    swap(this->first, rhs.first);
+    return *this;
 }
 
 void List::insert(int value, List::Node *current_node)
 {
     // If trying to insert into a new list: Create it
-    if (this->first == nullptr)
+    if (this->is_empty())
     {
         List::Node *new_node = new List::Node{value, nullptr};
         this->first = new_node;
@@ -105,51 +124,60 @@ void List::insert(int value, List::Node *current_node)
     }
 }
 
-void List::remove(int search, bool search_by_value)
+void List::remove(int value)
 {
-    int index = {};
-    if (search_by_value)
+    if (this->is_empty())
     {
-        index = this->find(search);
+        throw new logic_error("Trying to remove a value from an empty list");
     }
-    else
+    cout << "Trying to remove " << value << " for list " << *this << endl;
+
+    List::Node *prev_node = nullptr;
+    List::Node *current_node = this->first;
+    while (current_node->next != nullptr)
     {
-        index = search;
+        // If we found the node to delete:
+        if (current_node->value == value)
+        {
+            cout << "Found the node to remove: " << endl;
+            // If we are on the first node: reassign first pointer
+            if (prev_node == nullptr)
+            {
+                cout << "Its the first one" << endl;
+
+                this->first = current_node->next;
+            }
+            // If we are somewhere in the middle
+            else
+            {
+                cout << "Its between " << prev_node->value << " and " << current_node->next->value << endl;
+
+                prev_node->next = current_node->next;
+            }
+            delete current_node;
+            return;
+        }
+
+        prev_node = current_node;
+        current_node = current_node->next;
+    }
+    if (current_node->value != value)
+    {
+        throw logic_error("Couldnt find node to delete");
     }
 
-    List::Node *node_to_delete = this->find_node_at(index);
-
-    // If the item to remove is the only one: clear list
-    if (index == 0 && this->size() == 1)
+    // If the loop didnt run once: we need to delete the first and only item
+    if (prev_node == nullptr)
     {
-        delete node_to_delete;
+        cout << "The node to remove is the only one" << endl;
         this->first = nullptr;
     }
-
-    // If the item to remove is in the beggining: reassign first pointer
-    else if (index == 0)
-    {
-        List::Node *next_node = this->find_node_at(index + 1);
-        delete node_to_delete;
-        this->first = next_node;
-    }
-
-    // If the item to remove is at the end: set pointer before it to nullptr
-    else if (this->size() == index + 1)
-    {
-        List::Node *prev_node = this->find_node_at(index - 1);
-        delete node_to_delete;
-        prev_node->next = nullptr;
-    }
-
-    // If the item to remove is somewhere in the middle: pointer before it to item after it
     else
     {
-        List::Node *prev_node = this->find_node_at(index - 1);
-        List::Node *next_node = this->find_node_at(index + 1);
-        delete node_to_delete;
-        prev_node->next = next_node;
+        cout << "The node to remove is the last one" << endl;
+        prev_node->next = nullptr;
     }
+    delete current_node;
 }
 
 // Helper functions
@@ -190,11 +218,6 @@ List::Node *List::find_node_at(int index) const
     return current_node;
 }
 
-List::Node *List::get_last_node() const
-{
-    return this->find_node_at(this->size() - 1);
-}
-
 int List::find(int value) const
 {
     int index = {0};
@@ -217,43 +240,26 @@ int List::find_at(int index) const
     return (this->find_node_at(index))->value;
 }
 
-int List::get_last() const
-{
-    return (this->get_last_node())->value;
-}
-
-vector<int> List::get_values_vector() const
+string List::to_string() const
 {
     if (this->first == nullptr)
     {
-        vector<int> empty_vector = {};
-        return empty_vector;
+        return "";
     }
 
+    stringstream stream{};
     List::Node *current_node = this->first;
-    vector<int> values = {current_node->value};
-
     while (current_node->next != nullptr)
     {
+        stream << current_node->value << " -> ";
         current_node = current_node->next;
-        values.push_back(current_node->value);
     }
-    return values;
+    stream << current_node->value;
+    return stream.str();
 }
 
 std::ostream &operator<<(std::ostream &os, List const &list)
 {
-    vector<int> values = list.get_values_vector();
-    for (long unsigned int i = 0; i < values.size(); i++)
-    {
-        if (i != values.size() - 1)
-        {
-            os << values[i] << " -> ";
-        }
-        else
-        {
-            os << values[i];
-        }
-    }
+    os << list.to_string();
     return os;
 }

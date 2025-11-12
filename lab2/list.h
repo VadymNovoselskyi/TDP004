@@ -1,6 +1,8 @@
 #ifndef LIST_H
 #define LIST_H
+
 #include <iostream>
+#include <string>
 #include <vector>
 
 class List
@@ -15,7 +17,6 @@ private:
     Node *first{};
 
     Node *find_node_at(int index) const;
-    Node *get_last_node() const;
 
 public:
     List();
@@ -36,20 +37,16 @@ public:
     List& operator=(List && rhs);
 
     void insert(int value, List::Node *current_node = nullptr);
-
-    void remove(int search, bool search_by_value = true);
+    void remove(int value);
 
 
     // Helper functions
     bool is_empty() const;
     int size() const;
 
-
+    std::string to_string() const;
     int find_at(int index) const;
-    int get_last() const;
     int find(int value) const;
-
-    std::vector<int> get_values_vector() const;
 };
 
 std::ostream &operator<<(std::ostream& os, List const &list);
