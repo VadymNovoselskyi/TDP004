@@ -143,3 +143,107 @@ TEST_CASE("Print out items list")
         CHECK(stream2.str() == "");
     }
 }
+
+TEST_CASE("Constructors and operators")
+{
+    SECTION("Copy_constructor")
+    {
+        List l1{};
+        l1.insert(1);
+        l1.insert(2);
+        l1.insert(3);
+
+        List l2 {l1};
+
+        l2.remove(1);
+        l2.remove(2);
+
+        CHECK_FALSE(l1.size() == l2.size());
+
+        CHECK(l2.find_at(0) == 3);
+        CHECK(l2.size() == 1);
+    }
+    SECTION("Copy_assignment_operator")
+    {
+        List l1{};
+
+        l1.insert(1);
+        l1.insert(2);
+        l1.insert(3);
+
+        List l2 {};
+
+        l2.insert(8);
+        l2.insert(9);
+
+        l2 = l1;
+
+        CHECK(l1.size() == l2.size());
+
+        CHECK(l2.find_at(0) == 1);
+        CHECK(l2.size() == 3);
+
+        CHECK_THROWS(l2.remove(8));
+
+        l2.remove(3);
+
+        CHECK_FALSE(l1.size() == l2.size());
+    }
+
+    SECTION("Moving_constructor")
+    {
+        List l1{};
+        l1.insert(1);
+        l1.insert(2);
+        l1.insert(3);
+
+        List l2 = std::move(l1);
+
+        CHECK(l1.is_empty());
+
+        l2.remove(1);
+        l2.remove(2);
+
+        CHECK(l2.find_at(0) == 3);
+        CHECK(l2.size() == 1);
+    }
+
+    SECTION("Moving_assignment_operator")
+    {
+        List l1{};
+        l1.insert(1);
+        l1.insert(2);
+        l1.insert(3);
+
+        List l2 {};
+
+        l2.insert(8);
+        l2.insert(9);
+
+        l2 = std::move(l1);
+
+        CHECK(l1.size() == 2);
+
+        CHECK(l2.size() == 3);
+
+        l2.remove(1);
+        l2.remove(2);
+
+        CHECK(l2.find_at(0) == 3);
+        CHECK(l2.size() == 1);
+        CHECK(l1.size() == 2);
+    }
+
+    SECTION("Moving_assignment_operator on the same list")
+    {
+        List l1{};
+        l1.insert(1);
+        l1.insert(2);
+        l1.insert(3);
+
+        l1 = std::move(l1);
+
+        CHECK(l1.size() == 3);
+        CHECK(l1.find_at(0) == 1);
+    }
+}
