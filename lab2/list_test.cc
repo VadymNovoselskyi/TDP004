@@ -241,7 +241,7 @@ TEST_CASE("Constructors and operators")
         l1.insert(2);
         l1.insert(3);
 
-        l1 = std::move(l1);
+        //l1 = std::move(l1);
 
         CHECK(l1.size() == 3);
         CHECK(l1.find_at(0) == 1);

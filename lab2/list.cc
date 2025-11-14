@@ -1,5 +1,4 @@
 #include "list.h"
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 

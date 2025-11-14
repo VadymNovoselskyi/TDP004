@@ -1,5 +1,5 @@
-#ifndef TIME_H
-#define TIME_H
+#ifndef TIME_Hh
+#define TIME_Hh
 
 #include <string>
 #include <iostream>
@@ -7,7 +7,7 @@
 class Time
 {
 public:
-    Time(int hour = 0, int minute = 0, int second = 0);
+    Time(int hour = {}, int minute = {}, int second = {});
     Time(std::string time_string);
     std::string to_string(bool am_format = false) const;
 

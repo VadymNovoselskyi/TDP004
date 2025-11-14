@@ -1,5 +1,3 @@
-#include <iostream>
-#include <string>
 #include <stdexcept>
 #include "Time.h"
 
@@ -68,7 +66,8 @@ Time::Time(string t_s)
 
 string Time::to_string(bool am_format) const
 {
-    string string_hour = {};
+    string string_hour = std::to_string(hour);
+
     if (am_format)
     {
         if (hour == 0)
@@ -76,21 +75,12 @@ string Time::to_string(bool am_format) const
             string_hour = "12";
         }
 
-        else if (hour > 12)
+        else if (hour > 12)  
         {
             string_hour = std::to_string(hour - 12);
         }
-
-        else
-        {
-            string_hour = std::to_string(hour);
-        }
     }
-    else
-    {
-        string_hour = std::to_string(hour);
-    }
-
+    
     string string_minute = std::to_string(minute);
     string string_second = std::to_string(second);
 
