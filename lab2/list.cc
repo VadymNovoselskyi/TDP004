@@ -73,6 +73,11 @@ List &List::operator=(List &&rhs)
     return *this;
 }
 
+void List::insert(int value)
+{
+    List::insert(value, nullptr);
+}
+
 void List::insert(int value, List::Node *current_node)
 {
     // If trying to insert into a new list: Create it
