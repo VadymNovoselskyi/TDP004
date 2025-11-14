@@ -53,6 +53,7 @@ List::~List()
         delete current_node;
         current_node = next;
     }
+    this->first = nullptr;
 }
 
 // Flyttkonstruktor
