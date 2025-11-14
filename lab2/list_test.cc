@@ -72,6 +72,7 @@ TEST_CASE("Find items")
         CHECK(l.find_at(0) == 1);
         CHECK(l.find_at(1) == 2);
         CHECK(l.find_at(2) == 3);
+        CHECK_THROWS(l.find_at(999));
     }
 
     SECTION("Find items by value")
@@ -86,6 +87,7 @@ TEST_CASE("Find items")
         CHECK(l.find(2) == 1);
         CHECK(l.find(3) == 2);
         CHECK(l.find(3) == l.size() - 1);
+        CHECK_THROWS(l.find(999));
     }
 }
 

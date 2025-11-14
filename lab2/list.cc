@@ -47,15 +47,12 @@ List::~List()
     }
 
     Node *current_node = this->first;
-    while (current_node->next != nullptr)
+    while (current_node != nullptr)
     {
         Node *next = current_node->next;
         delete current_node;
         current_node = next;
     }
-
-    // Also delete the last node, as the loop stopped after reaching it
-    delete current_node;
 }
 
 // Flyttkonstruktor
@@ -100,12 +97,11 @@ void List::insert(int value, List::Node *current_node)
         }
     }
 
-    // If current_node is the last item: Make our item last (with an edgecase)
+    // If current_node is the last item: Make our item last
     if (current_node->next == nullptr)
     {
         List::Node *new_node = new List::Node{value, nullptr};
         current_node->next = new_node;
-
         return;
     }
 
@@ -114,13 +110,10 @@ void List::insert(int value, List::Node *current_node)
     {
         List::Node *new_node = new List::Node{value, current_node->next};
         current_node->next = new_node;
+        return;
     }
 
-    // If next node is still smaller: Move on one step
-    else
-    {
-        List::insert(value, current_node->next);
-    }
+    List::insert(value, current_node->next);
 }
 
 void List::remove(int value)
@@ -133,7 +126,7 @@ void List::remove(int value)
 
     List::Node *prev_node = nullptr;
     List::Node *current_node = this->first;
-    while (current_node->next != nullptr)
+    while (current_node != nullptr)
     {
         // If we found the node to delete:
         if (current_node->value == value)
@@ -155,21 +148,7 @@ void List::remove(int value)
         prev_node = current_node;
         current_node = current_node->next;
     }
-    if (current_node->value != value)
-    {
-        throw logic_error("Couldnt find node to delete");
-    }
-
-    // If the loop didnt run once: we need to delete the first and only item
-    if (prev_node == nullptr)
-    {
-        this->first = nullptr;
-    }
-    else
-    {
-        prev_node->next = nullptr;
-    }
-    delete current_node;
+    throw logic_error("Couldnt find node to delete");
 }
 
 // Helper functions
@@ -192,32 +171,38 @@ int List::size() const
 
 List::Node *List::find_node_at(int index) const
 {
+    if(index >= this->size())
+    {
+        throw logic_error("Invalid index: index out of range");
+    }
+
     int count = 0;
     List::Node *current_node = this->first;
-    while (count < index && current_node->next != nullptr)
+    while (count < index && current_node != nullptr)
     {
         current_node = current_node->next;
         count++;
     }
 
-    if (current_node->next == nullptr && count < index)
-    {
-        throw logic_error("Invalid index: index out of range");
-    }
     return current_node;
 }
 
 int List::find(int value) const
 {
+    if(this->is_empty())
+    {
+        throw logic_error("The list is empty, cant find anything");
+    }
+
     int index = {0};
     List::Node *current_node = this->first;
-    while (current_node->value != value && current_node->next != nullptr)
+    while (current_node != nullptr && current_node->value != value)
     {
         current_node = current_node->next;
         index++;
     }
 
-    if (current_node->next == nullptr && current_node->value != value)
+    if (current_node == nullptr)
     {
         throw logic_error("Couldnt find the value");
     }
