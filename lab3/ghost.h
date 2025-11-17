@@ -22,10 +22,10 @@ protected:
   Point pos{};
 };
 
-class AngryGhost : public Ghost {
+class AngerIssueGhost : public Ghost {
 public:
-  AngryGhost(Pacman const &pacman, Point const &pos);
-  virtual ~AngryGhost() = default;
+  AngerIssueGhost(Pacman const &pacman, Point const &pos);
+  virtual ~AngerIssueGhost() = default;
 
   bool is_angry() const;
   void set_angry(bool angry);
@@ -34,7 +34,7 @@ protected:
   bool angry;
 };
 
-class Blinky : public AngryGhost {
+class Blinky : public AngerIssueGhost {
 public:
   Blinky(Pacman const &pacman, Point const &pos);
 

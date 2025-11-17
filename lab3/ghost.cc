@@ -28,23 +28,23 @@ Point Ghost::get_position() const
 }
 
 // AngryGhost:
-AngryGhost::AngryGhost(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos), angry{false}
+AngerIssueGhost::AngerIssueGhost(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos), angry{false}
 {
 }
 
 
-bool AngryGhost::is_angry() const
+bool AngerIssueGhost::is_angry() const
 {
     return this->angry;
 }
 
-void AngryGhost::set_angry(bool angry)
+void AngerIssueGhost::set_angry(bool angry)
 {
     this->angry = angry;
 }
 
 // Blinky:
-Blinky::Blinky(Pacman const &pacman, Point const &pos) : AngryGhost(pacman, pos)
+Blinky::Blinky(Pacman const &pacman, Point const &pos) : AngerIssueGhost(pacman, pos)
 {
 }
 
