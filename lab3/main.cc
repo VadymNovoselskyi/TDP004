@@ -62,6 +62,10 @@ public:
             }
             else if (command == "quit")
             {
+                for (Ghost *ghost : ghosts)
+                {
+                    delete ghost;
+                }
                 break;
             }
             else if (command == "anger")

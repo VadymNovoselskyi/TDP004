@@ -1,7 +1,6 @@
-#include "given.h"
+#include <cmath>
 #include "ghost.h"
 
-#include <cmath>
 
 using namespace std;
 
