@@ -56,12 +56,16 @@ public:
 
 class Clyde : public Ghost {
 public:
-  Clyde(Pacman const &pacman, Point const &pos);
+  Clyde(Pacman const &pacman, Point const &pos, int target_range = DEFAULT_TARGET_RANGE);
 
   Point get_chase_point() const override;
   Point get_scatter_point() const override;
 
   std::string get_color() const override;
+
+private:
+  int target_range;
+  static const int DEFAULT_TARGET_RANGE {10};
 };
 
 #endif

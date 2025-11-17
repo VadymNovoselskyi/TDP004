@@ -91,7 +91,7 @@ string Pinky::get_color() const
 }
 
 // Clyde
-Clyde::Clyde(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos)
+Clyde::Clyde(Pacman const &pacman, Point const &pos, int target_range) : Ghost(pacman, pos), target_range{target_range}
 {
 }
 
@@ -99,7 +99,7 @@ Point Clyde::get_chase_point() const
 {
     Point player_pos{this->pacman.get_position()};
     int dist_to_player = abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y);
-    if (dist_to_player > CLYDE_TARGET_RANGE)
+    if (dist_to_player > this->target_range)
     {
         return player_pos;
     }

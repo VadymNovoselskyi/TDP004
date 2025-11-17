@@ -18,8 +18,6 @@
 extern int WIDTH;
 extern int HEIGHT;
 
-extern int CLYDE_TARGET_RANGE;
-
 /*
   Ett aggregat som använd för att representera punkter och riktninar på spelplanen.
   Aggregatet har också hjälpsamma operatorer som kan underlätta din implementation.

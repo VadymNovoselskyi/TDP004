@@ -2,7 +2,6 @@
 
 int WIDTH = 19;
 int HEIGHT = 22;
-int CLYDE_TARGET_RANGE = 10;
 
 bool operator==(Point const &lhs, Point const &rhs)
 {
