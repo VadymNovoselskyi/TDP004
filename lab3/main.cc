@@ -77,6 +77,7 @@ public:
             }
             else
             {
+                bool valid_command = false;
                 for (Ghost *ghost : ghosts)
                 {
                     if (ghost->get_color() != command)
@@ -86,9 +87,13 @@ public:
 
                     Point new_pos{this->get_point(iss)};
                     ghost->set_position(new_pos);
+                    valid_command = true;
                     break;
                 }
-                cout << "Command: \"" << command << "\" is invalid command" << endl;
+                if (!valid_command)
+                {
+                    cout << "Command: \"" << command << "\" is invalid command" << endl;
+                }
             }
         }
     }
