@@ -12,7 +12,6 @@ Ghost::Ghost(Pacman &pacman, Point pos) : pacman{pacman}, pos{pos}
         throw std::runtime_error("position outside valid range");
     }
 }
-Ghost::~Ghost() {}
 
 void Ghost::set_position(Point const &pos)
 {
@@ -32,7 +31,6 @@ Point Ghost::get_position() const
 AngryGhost::AngryGhost(Pacman &pacman, Point pos) : Ghost(pacman, pos), angry{false}
 {
 }
-AngryGhost::~AngryGhost() {}
 
 
 bool AngryGhost::is_angry() const

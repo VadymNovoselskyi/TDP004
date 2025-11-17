@@ -8,7 +8,7 @@ class Ghost
 {
 public:
     Ghost(Pacman &pacman, Point pos);
-    virtual ~Ghost();
+    virtual ~Ghost() = default;
 
     virtual Point get_chase_point() const = 0;
     virtual Point get_scatter_point() const = 0;
@@ -27,11 +27,7 @@ class AngryGhost : public Ghost
 {
 public:
     AngryGhost(Pacman &pacman, Point pos);
-    virtual ~AngryGhost();
-
-    virtual Point get_chase_point() const = 0;
-    virtual Point get_scatter_point() const = 0;
-    virtual std::string get_color() const = 0;
+    virtual ~AngryGhost() = default;
 
     bool is_angry() const;
     void set_angry(bool angry);
