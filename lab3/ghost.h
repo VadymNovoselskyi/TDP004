@@ -6,7 +6,7 @@
 
 class Ghost {
 public:
-  Ghost(Pacman const &pacman, Point pos);
+  Ghost(Pacman const &pacman, Point const &pos);
   virtual ~Ghost() = default;
 
   virtual Point get_chase_point() const = 0;
@@ -24,7 +24,7 @@ protected:
 
 class AngryGhost : public Ghost {
 public:
-  AngryGhost(Pacman const &pacman, Point pos);
+  AngryGhost(Pacman const &pacman, Point const &pos);
   virtual ~AngryGhost() = default;
 
   bool is_angry() const;
@@ -36,7 +36,7 @@ protected:
 
 class Blinky : public AngryGhost {
 public:
-  Blinky(Pacman const &pacman, Point pos);
+  Blinky(Pacman const &pacman, Point const &pos);
 
   Point get_chase_point() const override;
   Point get_scatter_point() const override;
@@ -46,7 +46,7 @@ public:
 
 class Pinky : public Ghost {
 public:
-  Pinky(Pacman const &pacman, Point pos);
+  Pinky(Pacman const &pacman, Point const &pos);
 
   Point get_chase_point() const override;
   Point get_scatter_point() const override;
@@ -56,7 +56,7 @@ public:
 
 class Clyde : public Ghost {
 public:
-  Clyde(Pacman const &pacman, Point pos);
+  Clyde(Pacman const &pacman, Point const &pos);
 
   Point get_chase_point() const override;
   Point get_scatter_point() const override;
