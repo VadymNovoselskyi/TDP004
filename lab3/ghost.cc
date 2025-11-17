@@ -99,7 +99,7 @@ Point Clyde::get_chase_point() const
 {
     Point player_pos{this->pacman.get_position()};
     int dist_to_player = abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y);
-    if (dist_to_player < CLYDE_TARGET_RANGE)
+    if (dist_to_player > CLYDE_TARGET_RANGE)
     {
         return player_pos;
     }
