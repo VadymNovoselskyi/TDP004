@@ -52,7 +52,7 @@ public:
                 Point new_pos{this->get_point(iss)};
                 try {
                     pacman.set_position(new_pos);
-                } catch(runtime_error error)
+                } catch(runtime_error const& error)
                 {
                     cout << "Couldn't move the pacman: " << error.what() << endl;
                 }
@@ -62,7 +62,7 @@ public:
                 Point new_dir{this->get_point(iss)};
                 try {
                     this->pacman.set_direction(new_dir);
-                } catch(runtime_error error)
+                } catch(runtime_error const& error)
                 {
                     cout << "Couldn't change the direction: " << error.what() << endl;
                 }
@@ -99,7 +99,7 @@ public:
                     Point new_pos{this->get_point(iss)};
                     try {
                         ghost->set_position(new_pos);
-                    } catch(runtime_error error)
+                    } catch(runtime_error const& error)
                     {
                         cout << "Couldn't move the ghost: " << error.what() << endl;
                     }

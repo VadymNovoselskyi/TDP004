@@ -5,7 +5,7 @@
 using namespace std;
 
 // Base ghost
-Ghost::Ghost(Pacman &pacman, Point pos) : pacman{pacman}, pos{pos}
+Ghost::Ghost(Pacman const &pacman, Point pos) : pacman{pacman}, pos{pos}
 {
     if (pos.x > WIDTH or pos.x < 0 or pos.y > HEIGHT or pos.y < 0)
     {
@@ -28,7 +28,7 @@ Point Ghost::get_position() const
 }
 
 // AngryGhost:
-AngryGhost::AngryGhost(Pacman &pacman, Point pos) : Ghost(pacman, pos), angry{false}
+AngryGhost::AngryGhost(Pacman const &pacman, Point pos) : Ghost(pacman, pos), angry{false}
 {
 }
 
@@ -44,7 +44,7 @@ void AngryGhost::set_angry(bool angry)
 }
 
 // Blinky:
-Blinky::Blinky(Pacman &pacman, Point pos) : AngryGhost(pacman, pos)
+Blinky::Blinky(Pacman const &pacman, Point pos) : AngryGhost(pacman, pos)
 {
 }
 
@@ -69,7 +69,7 @@ string Blinky::get_color() const
 }
 
 // Pinky
-Pinky::Pinky(Pacman &pacman, Point pos) : Ghost(pacman, pos)
+Pinky::Pinky(Pacman const &pacman, Point pos) : Ghost(pacman, pos)
 {
 }
 
@@ -91,7 +91,7 @@ string Pinky::get_color() const
 }
 
 // Clyde
-Clyde::Clyde(Pacman &pacman, Point pos) : Ghost(pacman, pos)
+Clyde::Clyde(Pacman const &pacman, Point pos) : Ghost(pacman, pos)
 {
 }
 
