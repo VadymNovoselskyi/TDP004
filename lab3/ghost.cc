@@ -16,6 +16,10 @@ Ghost::~Ghost() {}
 
 void Ghost::set_position(Point const &pos)
 {
+    if (pos.x > WIDTH or pos.x < 0 or pos.y > HEIGHT or pos.y < 0)
+    {
+        throw std::runtime_error("position outside valid range");
+    }
     this->pos = pos;
 }
 

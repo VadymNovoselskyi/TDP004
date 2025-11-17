@@ -1,4 +1,5 @@
 #include "ghost.h"
+#include <stdexcept>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -49,12 +50,22 @@ public:
             if (command == "pos")
             {
                 Point new_pos{this->get_point(iss)};
-                pacman.set_position(new_pos);
+                try {
+                    pacman.set_position(new_pos);
+                } catch(runtime_error error)
+                {
+                    cout << "Couldn't move the pacman: " << error.what() << endl;
+                }
             }
             else if (command == "dir")
             {
                 Point new_dir{this->get_point(iss)};
-                this->pacman.set_direction(new_dir);
+                try {
+                    this->pacman.set_direction(new_dir);
+                } catch(runtime_error error)
+                {
+                    cout << "Couldn't change the direction: " << error.what() << endl;
+                }
             }
             else if (command == "chase" || command == "scatter")
             {
@@ -86,7 +97,12 @@ public:
                     }
 
                     Point new_pos{this->get_point(iss)};
-                    ghost->set_position(new_pos);
+                    try {
+                        ghost->set_position(new_pos);
+                    } catch(runtime_error error)
+                    {
+                        cout << "Couldn't move the ghost: " << error.what() << endl;
+                    }
                     valid_command = true;
                     break;
                 }
