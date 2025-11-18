@@ -4,21 +4,23 @@
 
 using namespace std;
 
-// Base ghost
-Ghost::Ghost(Pacman const &pacman, Point const &pos) : pacman{pacman}, pos{pos}
+void Ghost::validate_position(Point const& p) const
 {
-    if (pos.x > WIDTH or pos.x < 0 or pos.y > HEIGHT or pos.y < 0)
+    if (p.x > WIDTH or p.x < 0 or p.y > HEIGHT or p.y < 0)
     {
         throw std::runtime_error("position outside valid range");
     }
 }
 
+// Base ghost
+Ghost::Ghost(Pacman const &pacman, Point const &pos) : pacman{pacman}, pos{pos}
+{
+    validate_position(pos);
+}
+
 void Ghost::set_position(Point const &pos)
 {
-    if (pos.x > WIDTH or pos.x < 0 or pos.y > HEIGHT or pos.y < 0)
-    {
-        throw std::runtime_error("position outside valid range");
-    }
+    validate_position(pos);
     this->pos = pos;
 }
 

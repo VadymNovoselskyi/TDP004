@@ -20,6 +20,7 @@ public:
 protected:
   Pacman const &pacman;
   Point pos{};
+  void validate_position(Point const& p) const;
 };
 
 class AngerIssueGhost : public Ghost {
