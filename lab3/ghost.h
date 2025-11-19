@@ -19,7 +19,9 @@ public:
 
 protected:
   Pacman const &pacman;
-  Point pos{};
+  Point pos;
+
+private:
   void validate_position(Point const& p) const;
 };
 
@@ -57,7 +59,7 @@ public:
 
 class Clyde : public Ghost {
 public:
-  Clyde(Pacman const &pacman, Point const &pos, int target_range = DEFAULT_TARGET_RANGE);
+  Clyde(Pacman const &pacman, Point const &pos, int target_range = 10);
 
   Point get_chase_point() const override;
   Point get_scatter_point() const override;
@@ -66,7 +68,6 @@ public:
 
 private:
   int target_range;
-  static const int DEFAULT_TARGET_RANGE {10};
 };
 
 #endif

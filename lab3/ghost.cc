@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void Ghost::validate_position(Point const& p) const
+void Ghost::validate_position(Point const &p) const
 {
     if (p.x > WIDTH or p.x < 0 or p.y > HEIGHT or p.y < 0)
     {
@@ -32,7 +32,6 @@ Point Ghost::get_position() const
 AngerIssueGhost::AngerIssueGhost(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos), angry{false}
 {
 }
-
 
 bool AngerIssueGhost::is_angry() const
 {
@@ -99,7 +98,7 @@ Clyde::Clyde(Pacman const &pacman, Point const &pos, int target_range) : Ghost(p
 Point Clyde::get_chase_point() const
 {
     Point player_pos{pacman.get_position()};
-    int dist_to_player = abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y);
+    int dist_to_player{abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y)};
     if (dist_to_player > target_range)
     {
         return player_pos;

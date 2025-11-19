@@ -4,6 +4,10 @@
 #include "list.h"
 #include "list.h"
 
+// Komplettering: Er kod kompilerar med varningar. 
+// Komplettering: Det saknas test för självtilldelning för 
+//  tilldelningsoperatorn.
+
 // Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna 
 //    organisera vad ni testar var. Ex. 
 //    TEST_CASE("remove")
