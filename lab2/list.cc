@@ -4,6 +4,16 @@
 
 using namespace std;
 
+// Komplettering: Kodupprepning i kopieringskonstruktorn.
+// Komplettering: Alla datamedlemmar ska initieras i datamedlemsinitieringslistan.
+// Komplettering: Använd inte this i onödan.
+// Komplettering: Använd inte List:: innuti medlemsfunktioner. Det är onödigt.
+// Komplettering: Initiera variabler med måsvingar.
+
+// Kommentar: Jag ser att ni växlar språk på era kommentarer. Det är lite udda.
+// Kommentar: Ni har ganska mycket liknande funktionalitet i era find-funktioner 
+//    (huvudsakligen era loopar). Finns det något sätt man hade kunnat bryta ut loopandet?
+
 List::List() : first(nullptr) {}
 
 // Kopieringskonstruktor

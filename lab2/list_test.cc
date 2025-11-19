@@ -4,6 +4,30 @@
 #include "list.h"
 #include "list.h"
 
+// Information om komplettering:
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//
+//   Komplettering lämnas in via sendlab efter senast 3 arbetsdagar.
+//
+//   Har ni frågor om kompletteringen kan ni maila mig.
+
+// Komplettering: Det saknas test för självtilldelning.
+// Komplettering: Alla publika funktioner ska testas. 
+
+// Kommentar: Vi ska inte interagera med objekt vi har kört std::move på, 
+//    då dessa är deprecated. 
+// Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna 
+//    organisera vad ni testar var. Ex. 
+//    TEST_CASE("remove")
+//        SECTION("remove front ok")
+//        SECTION("remove back ok")
+//        SECTION("remove middle ok")
+//        SECTION("remove bad index")
+//    Det blir lättare att få en överblick då. 
+//    Och att förstå varför vissa operationer ska lyckas, medan andra ska kasta fel.
+
 //=======================================================================
 // Test cases
 //=======================================================================

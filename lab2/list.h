@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 
+// Komplettering: Initiera inte variabler i h-filen.
+// Komplettering: Implementationsdetaljer syns i det publika gränssnittet.
+
 class List
 {
 public:
