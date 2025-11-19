@@ -1,4 +1,5 @@
 #include "ghost.h"
+#include <istream>
 #include <stdexcept>
 #include <string>
 #include <iostream>
@@ -47,69 +48,29 @@ public:
 
             if (command == "pos")
             {
-                Point new_pos{this->get_point(iss)};
-                try {
-                    pacman.set_position(new_pos);
-                } catch(runtime_error const& error)
-                {
-                    cout << "Couldn't move the pacman: " << error.what() << endl;
-                }
+                handle_pos_command(iss);
             }
             else if (command == "dir")
             {
-                Point new_dir{this->get_point(iss)};
-                try {
-                    this->pacman.set_direction(new_dir);
-                } catch(runtime_error const& error)
-                {
-                    cout << "Couldn't change the direction: " << error.what() << endl;
-                }
+                handle_dir_command(iss);
             }
             else if (command == "chase" || command == "scatter")
             {
-                mode = command;
+                handle_mode_command(command);
             }
             else if (command == "quit")
             {
-                for (Ghost *ghost : ghosts)
-                {
-                    delete ghost;
-                }
+                handle_quit_command();
                 break;
             }
             else if (command == "anger")
             {
-                for (Ghost* ghost : this->ghosts)
-                {
-                    AngerIssueGhost* anger_issue_ghost = dynamic_cast<AngerIssueGhost*>(ghost);
-                    if (anger_issue_ghost == nullptr) 
-                    {
-                        continue;
-                    }
-                    
-                    anger_issue_ghost->set_angry(true);
-                }
+                handle_anger_command();
             }
             else
             {
                 bool valid_command = false;
-                for (Ghost *ghost : ghosts)
-                {
-                    if (ghost->get_color() != command)
-                    {
-                        continue;
-                    }
-
-                    Point new_pos{this->get_point(iss)};
-                    try {
-                        ghost->set_position(new_pos);
-                    } catch(runtime_error const& error)
-                    {
-                        cout << "Couldn't move the ghost: " << error.what() << endl;
-                    }
-                    valid_command = true;
-                    break;
-                }
+                valid_command = handle_ghost_command(command, iss);
                 if (!valid_command)
                 {
                     cout << "Command: \"" << command << "\" is invalid command" << endl;
@@ -119,6 +80,78 @@ public:
     }
 
 private:
+
+    void handle_pos_command(istringstream &iss)
+    {
+        Point new_pos{this->get_point(iss)};
+        try {
+            pacman.set_position(new_pos);
+        } catch(runtime_error const& error)
+        {
+            cout << "Couldn't move the pacman: " << error.what() << endl;
+        }
+    }
+
+    void handle_dir_command(istringstream &iss)
+    {
+        Point new_dir{this->get_point(iss)};
+        try {
+            this->pacman.set_direction(new_dir);
+        } catch(runtime_error const& error)
+        {
+            cout << "Couldn't change the direction: " << error.what() << endl;
+        }
+    }
+
+    void handle_mode_command(string const& command)
+    {
+        mode = command;
+    }
+
+    void handle_quit_command()
+    {
+        for (Ghost *ghost : ghosts)
+        {
+            delete ghost;
+        }
+    }
+
+    void handle_anger_command()
+    {
+        for (Ghost* ghost : this->ghosts)
+        {
+            AngerIssueGhost* anger_issue_ghost = dynamic_cast<AngerIssueGhost*>(ghost);
+            if (anger_issue_ghost != nullptr) 
+            {
+                anger_issue_ghost->set_angry(true);
+            }
+        }
+    }
+
+    bool handle_ghost_command(string const& command, istringstream &iss)
+    {
+        bool valid_command = false;
+        for (Ghost *ghost : ghosts)
+        {
+            if (ghost->get_color() != command)
+            {
+                continue;
+            }
+
+            Point new_pos{this->get_point(iss)};
+            try {
+                ghost->set_position(new_pos);
+            } catch(runtime_error const& error)
+            {
+                cout << "Couldn't move the ghost: " << error.what() << endl;
+                return false;
+            }
+            valid_command = true;
+            break;
+        }
+        return valid_command;
+    }
+
     string get_command(istringstream &iss)
     {
         string command{};
