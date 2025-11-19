@@ -24,15 +24,13 @@ class Ghost_Tester
 
 public:
     Ghost_Tester()
-        : pacman{}, ghosts{}, anger_issue_ghosts{}, mode{"chase"}
+        : pacman{}, ghosts{}, mode{"chase"}
     {
     }
 
     void run()
-    {
-        AngerIssueGhost* blinky = new Blinky(this->pacman, {6, 6}); 
-        anger_issue_ghosts.push_back(blinky);
-        ghosts.push_back(blinky);
+    { 
+        ghosts.push_back(new Blinky(this->pacman, {6, 6}));
         ghosts.push_back(new Pinky(this->pacman, {4, 8}));
         ghosts.push_back(new Clyde(this->pacman, {10, 4}));
 
@@ -81,8 +79,14 @@ public:
             }
             else if (command == "anger")
             {
-                for (AngerIssueGhost* anger_issue_ghost : anger_issue_ghosts)
+                for (Ghost* ghost : this->ghosts)
                 {
+                    AngerIssueGhost* anger_issue_ghost = dynamic_cast<AngerIssueGhost*>(ghost);
+                    if (anger_issue_ghost == nullptr) 
+                    {
+                        continue;
+                    }
+                    
                     anger_issue_ghost->set_angry(true);
                 }
             }
@@ -190,7 +194,6 @@ private:
 
     Pacman pacman;
     vector<Ghost *> ghosts;
-    vector<AngerIssueGhost *> anger_issue_ghosts;
 
     string mode;
 };
