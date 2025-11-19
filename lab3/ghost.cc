@@ -1,7 +1,6 @@
 #include <cmath>
 #include "ghost.h"
 
-
 using namespace std;
 
 void Ghost::validate_position(Point const& p) const
@@ -26,7 +25,7 @@ void Ghost::set_position(Point const &pos)
 
 Point Ghost::get_position() const
 {
-    return this->pos;
+    return pos;
 }
 
 // AngryGhost:
@@ -37,12 +36,12 @@ AngerIssueGhost::AngerIssueGhost(Pacman const &pacman, Point const &pos) : Ghost
 
 bool AngerIssueGhost::is_angry() const
 {
-    return this->angry;
+    return angry;
 }
 
 void AngerIssueGhost::set_angry(bool angry)
 {
-    this->angry = angry;
+    angry = angry;
 }
 
 // Blinky:
@@ -52,14 +51,14 @@ Blinky::Blinky(Pacman const &pacman, Point const &pos) : AngerIssueGhost(pacman,
 
 Point Blinky::get_chase_point() const
 {
-    return this->pacman.get_position();
+    return pacman.get_position();
 }
 
 Point Blinky::get_scatter_point() const
 {
-    if (this->is_angry())
+    if (is_angry())
     {
-        return this->get_chase_point();
+        return get_chase_point();
     }
 
     return Point{WIDTH - 1, HEIGHT - 1};
@@ -77,8 +76,8 @@ Pinky::Pinky(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos)
 
 Point Pinky::get_chase_point() const
 {
-    Point player_pos{this->pacman.get_position()};
-    Point player_dir{this->pacman.get_direction()};
+    Point player_pos{pacman.get_position()};
+    Point player_dir{pacman.get_direction()};
     return {player_pos.x + player_dir.x * 2, player_pos.y + player_dir.y * 2};
 }
 
@@ -99,9 +98,9 @@ Clyde::Clyde(Pacman const &pacman, Point const &pos, int target_range) : Ghost(p
 
 Point Clyde::get_chase_point() const
 {
-    Point player_pos{this->pacman.get_position()};
+    Point player_pos{pacman.get_position()};
     int dist_to_player = abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y);
-    if (dist_to_player > this->target_range)
+    if (dist_to_player > target_range)
     {
         return player_pos;
     }
