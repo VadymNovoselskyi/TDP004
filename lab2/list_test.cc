@@ -4,8 +4,6 @@
 #include "list.h"
 #include "list.h"
 
-// Komplettering: Det saknas test för självtilldelning.
-
 // Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna 
 //    organisera vad ni testar var. Ex. 
 //    TEST_CASE("remove")

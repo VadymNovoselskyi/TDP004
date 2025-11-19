@@ -4,8 +4,6 @@
 
 using namespace std;
 
-// Komplettering: Använd inte this i onödan.
-
 // Kommentar: Jag ser att ni växlar språk på era kommentarer. Det är lite udda.
 // Kommentar: Ni har ganska mycket liknande funktionalitet i era find-funktioner 
 //    (huvudsakligen era loopar). Finns det något sätt man hade kunnat bryta ut loopandet?
@@ -23,7 +21,7 @@ List::List(List const &other): first(nullptr)
 
         if (previous_node == nullptr) 
         {
-            this->first = new_node;
+            first = new_node;
         }
         else {
             previous_node->next = new_node;
@@ -38,7 +36,7 @@ List::List(List const &other): first(nullptr)
 List &List::operator=(List const &rhs)
 {
     List tmp{rhs};
-    swap(this->first, tmp.first);
+    swap(first, tmp.first);
 
     return *this;
 }
@@ -46,19 +44,19 @@ List &List::operator=(List const &rhs)
 // Destruktor
 List::~List()
 {
-    if (this->is_empty())
+    if (is_empty())
     {
         return;
     }
 
-    Node *current_node {this->first};
+    Node *current_node {first};
     while (current_node != nullptr)
     {
         Node *next {current_node->next};
         delete current_node;
         current_node = next;
     }
-    this->first = nullptr;
+    first = nullptr;
 }
 
 // Flyttkonstruktor
@@ -68,13 +66,13 @@ List::List(List &&other): first(nullptr)
     // While other gets the unwanted old list (if not nullptr)
     // and we dont need to deal with it because it will destructure on
     // out-of-scope
-    swap(this->first, other.first);
+    swap(first, other.first);
 }
 
 // Flytttilldelingsoperator
 List &List::operator=(List &&rhs)
 {
-    swap(this->first, rhs.first);
+    swap(first, rhs.first);
     return *this;
 }
 
@@ -86,24 +84,24 @@ void List::insert(int value)
 void List::insert(int value, Node *current_node)
 {
     // If trying to insert into a new list: Create it
-    if (this->is_empty())
+    if (is_empty())
     {
         Node *new_node {new Node{value, nullptr}};
-        this->first = new_node;
+        first = new_node;
         return;
     }
 
     // If its the first round of recursion
     if (current_node == nullptr)
     {
-        current_node = this->first;
+        current_node = first;
 
         // Check if the first item is smaller than new_node: insert new_node on the
         // first place
         if (current_node->value > value)
         {
-            Node *new_node {new Node{value, this->first}};
-            this->first = new_node;
+            Node *new_node {new Node{value, first}};
+            first = new_node;
             return;
         }
     }
@@ -129,14 +127,14 @@ void List::insert(int value, Node *current_node)
 
 void List::remove(int value)
 {
-    if (this->is_empty())
+    if (is_empty())
     {
         throw logic_error("Trying to remove a value from an empty list");
         return;
     }
 
     Node *prev_node {nullptr};
-    Node *current_node {this->first};
+    Node *current_node {first};
     while (current_node != nullptr)
     {
         // If we found the node to delete:
@@ -145,7 +143,7 @@ void List::remove(int value)
             // If we are on the first node: reassign first pointer
             if (prev_node == nullptr)
             {
-                this->first = current_node->next;
+                first = current_node->next;
             }
             // If we are somewhere in the middle
             else
@@ -163,15 +161,15 @@ void List::remove(int value)
 }
 
 // Helper functions
-bool List::is_empty() const { return this->first == nullptr; }
+bool List::is_empty() const { return first == nullptr; }
 
 int List::size() const
 {
-    if (this->is_empty())
+    if (is_empty())
         return 0;
 
     int count = {1};
-    Node *current_node {this->first};
+    Node *current_node {first};
     while (current_node->next != nullptr)
     {
         current_node = current_node->next;
@@ -182,13 +180,13 @@ int List::size() const
 
 List::Node *List::find_node_at(int index) const
 {
-    if(index >= this->size())
+    if(index >= size())
     {
         throw logic_error("Invalid index: index out of range");
     }
 
-    int count = 0;
-    Node *current_node {this->first};
+    int count {0};
+    Node *current_node {first};
     while (count < index && current_node != nullptr)
     {
         current_node = current_node->next;
@@ -200,13 +198,13 @@ List::Node *List::find_node_at(int index) const
 
 int List::find(int value) const
 {
-    if(this->is_empty())
+    if(is_empty())
     {
         throw logic_error("The list is empty, cant find anything");
     }
 
-    int index = {0};
-    Node *current_node {this->first};
+    int index {0};
+    Node *current_node {first};
     while (current_node != nullptr && current_node->value != value)
     {
         current_node = current_node->next;
@@ -222,18 +220,18 @@ int List::find(int value) const
 
 int List::find_at(int index) const
 {
-    return (this->find_node_at(index))->value;
+    return (find_node_at(index))->value;
 }
 
 string List::to_string() const
 {
-    if (this->first == nullptr)
+    if (first == nullptr)
     {
         return "";
     }
 
     stringstream stream{};
-    Node *current_node {this->first};
+    Node *current_node {first};
     while (current_node->next != nullptr)
     {
         stream << current_node->value << " -> ";
