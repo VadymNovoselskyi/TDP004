@@ -4,9 +4,6 @@
 #include <iostream>
 #include <string>
 
-// Komplettering: Initiera inte variabler i h-filen.
-// Komplettering: Implementationsdetaljer syns i det publika gränssnittet.
-
 class List
 {
 public:
@@ -45,7 +42,7 @@ private:
         Node *next;
     };
 
-    Node *first{};
+    Node *first;
 
     void insert(int value, Node *current_node);
     Node *find_node_at(int index) const;

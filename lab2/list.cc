@@ -4,11 +4,7 @@
 
 using namespace std;
 
-// Komplettering: Kodupprepning i kopieringskonstruktorn.
-// Komplettering: Alla datamedlemmar ska initieras i datamedlemsinitieringslistan.
 // Komplettering: Använd inte this i onödan.
-// Komplettering: Använd inte List:: innuti medlemsfunktioner. Det är onödigt.
-// Komplettering: Initiera variabler med måsvingar.
 
 // Kommentar: Jag ser att ni växlar språk på era kommentarer. Det är lite udda.
 // Kommentar: Ni har ganska mycket liknande funktionalitet i era find-funktioner 
@@ -17,23 +13,22 @@ using namespace std;
 List::List() : first(nullptr) {}
 
 // Kopieringskonstruktor
-List::List(List const &other)
+List::List(List const &other): first(nullptr)
 {
-    if (other.is_empty())
-    {
-        return;
-    }
-
-    Node *first_node = new List::Node{other.first->value, nullptr};
-    this->first = first_node;
-
-    Node *previous_node = first_node;
-    Node *current_other = other.first->next;
+    Node *previous_node {nullptr};
+    Node *current_other {other.first};
     while (current_other != nullptr)
     {
-        List::Node *new_node = new List::Node{current_other->value, nullptr};
-        previous_node->next = new_node;
+        Node *new_node {new Node{current_other->value, nullptr}};
 
+        if (previous_node == nullptr) 
+        {
+            this->first = new_node;
+        }
+        else {
+            previous_node->next = new_node;
+        }
+        
         previous_node = new_node;
         current_other = current_other->next; 
     }
@@ -56,10 +51,10 @@ List::~List()
         return;
     }
 
-    Node *current_node = this->first;
+    Node *current_node {this->first};
     while (current_node != nullptr)
     {
-        Node *next = current_node->next;
+        Node *next {current_node->next};
         delete current_node;
         current_node = next;
     }
@@ -67,7 +62,7 @@ List::~List()
 }
 
 // Flyttkonstruktor
-List::List(List &&other)
+List::List(List &&other): first(nullptr)
 {
     // Swap lists, so that this receives the wanted other.first
     // While other gets the unwanted old list (if not nullptr)
@@ -88,12 +83,12 @@ void List::insert(int value)
     List::insert(value, nullptr);
 }
 
-void List::insert(int value, List::Node *current_node)
+void List::insert(int value, Node *current_node)
 {
     // If trying to insert into a new list: Create it
     if (this->is_empty())
     {
-        List::Node *new_node = new List::Node{value, nullptr};
+        Node *new_node {new Node{value, nullptr}};
         this->first = new_node;
         return;
     }
@@ -107,7 +102,7 @@ void List::insert(int value, List::Node *current_node)
         // first place
         if (current_node->value > value)
         {
-            List::Node *new_node = new List::Node{value, this->first};
+            Node *new_node {new Node{value, this->first}};
             this->first = new_node;
             return;
         }
@@ -116,7 +111,7 @@ void List::insert(int value, List::Node *current_node)
     // If current_node is the last item: Make our item last
     if (current_node->next == nullptr)
     {
-        List::Node *new_node = new List::Node{value, nullptr};
+        Node *new_node {new Node{value, nullptr}};
         current_node->next = new_node;
         return;
     }
@@ -124,12 +119,12 @@ void List::insert(int value, List::Node *current_node)
     // If next node is bigger: Insert new node between it
     if (current_node->next->value > value)
     {
-        List::Node *new_node = new List::Node{value, current_node->next};
+        Node *new_node {new Node{value, current_node->next}};
         current_node->next = new_node;
         return;
     }
 
-    List::insert(value, current_node->next);
+    insert(value, current_node->next);
 }
 
 void List::remove(int value)
@@ -140,8 +135,8 @@ void List::remove(int value)
         return;
     }
 
-    List::Node *prev_node = nullptr;
-    List::Node *current_node = this->first;
+    Node *prev_node {nullptr};
+    Node *current_node {this->first};
     while (current_node != nullptr)
     {
         // If we found the node to delete:
@@ -176,7 +171,7 @@ int List::size() const
         return 0;
 
     int count = {1};
-    List::Node *current_node = this->first;
+    Node *current_node {this->first};
     while (current_node->next != nullptr)
     {
         current_node = current_node->next;
@@ -193,7 +188,7 @@ List::Node *List::find_node_at(int index) const
     }
 
     int count = 0;
-    List::Node *current_node = this->first;
+    Node *current_node {this->first};
     while (count < index && current_node != nullptr)
     {
         current_node = current_node->next;
@@ -211,7 +206,7 @@ int List::find(int value) const
     }
 
     int index = {0};
-    List::Node *current_node = this->first;
+    Node *current_node {this->first};
     while (current_node != nullptr && current_node->value != value)
     {
         current_node = current_node->next;
@@ -238,7 +233,7 @@ string List::to_string() const
     }
 
     stringstream stream{};
-    List::Node *current_node = this->first;
+    Node *current_node {this->first};
     while (current_node->next != nullptr)
     {
         stream << current_node->value << " -> ";
