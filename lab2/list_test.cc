@@ -4,20 +4,8 @@
 #include "list.h"
 #include "list.h"
 
-// Information om komplettering:
-//   Kompletteringen kan gälla hela filen och alla filer i labben,
-//   så får ni komplettering på en sak, kan samma sak förekomma på
-//   fler ställen utan att jag skrivit det.
-//
-//   Komplettering lämnas in via sendlab efter senast 3 arbetsdagar.
-//
-//   Har ni frågor om kompletteringen kan ni maila mig.
-
 // Komplettering: Det saknas test för självtilldelning.
-// Komplettering: Alla publika funktioner ska testas. 
 
-// Kommentar: Vi ska inte interagera med objekt vi har kört std::move på, 
-//    då dessa är deprecated. 
 // Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna 
 //    organisera vad ni testar var. Ex. 
 //    TEST_CASE("remove")
@@ -151,6 +139,18 @@ TEST_CASE("Remove items")
 
 TEST_CASE("Print out items list")
 {
+    SECTION("to_string")
+    {
+        List l {};
+        l.insert(1);
+        l.insert(2);
+        l.insert(3);
+        l.insert(4);
+        l.insert(5);
+
+        CHECK(l.to_string() == "1 -> 2 -> 3 -> 4 -> 5");
+    }
+
     SECTION("Default print")
     {
         std::ostringstream stream1;
@@ -225,8 +225,6 @@ TEST_CASE("Constructors and operators")
 
         List l2 = std::move(l1);
 
-        CHECK(l1.is_empty());
-
         l2.remove(1);
         l2.remove(2);
 
@@ -248,8 +246,6 @@ TEST_CASE("Constructors and operators")
 
         l2 = std::move(l1);
 
-        CHECK(l1.size() == 2);
-
         CHECK(l2.size() == 3);
 
         l2.remove(1);
@@ -257,7 +253,6 @@ TEST_CASE("Constructors and operators")
 
         CHECK(l2.find_at(0) == 3);
         CHECK(l2.size() == 1);
-        CHECK(l1.size() == 2);
     }
 
     SECTION("Moving_assignment_operator on the same list")
@@ -267,7 +262,7 @@ TEST_CASE("Constructors and operators")
         l1.insert(2);
         l1.insert(3);
 
-        //l1 = std::move(l1);
+        l1 = std::move(l1);
 
         CHECK(l1.size() == 3);
         CHECK(l1.find_at(0) == 1);
