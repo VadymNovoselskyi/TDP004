@@ -218,6 +218,20 @@ TEST_CASE("Constructors and operators")
         CHECK_FALSE(l1.size() == l2.size());
     }
 
+    SECTION("Copy_assignment_operator on the same list")
+    {
+        List l{};
+        l.insert(1);
+        l.insert(2);
+        l.insert(3);
+
+        List& l_ref = l;
+        l = l_ref;
+
+        CHECK(l.size() == 3);
+        CHECK(l.find_at(0) == 1);
+    }
+
     SECTION("Moving_constructor")
     {
         List l1{};
@@ -257,16 +271,17 @@ TEST_CASE("Constructors and operators")
         CHECK(l2.size() == 1);
     }
 
-    SECTION("Moving_assignment_operator on the same list")
+    SECTION("Move_assignment_operator on the same list")
     {
-        List l1{};
-        l1.insert(1);
-        l1.insert(2);
-        l1.insert(3);
+        List l{};
+        l.insert(1);
+        l.insert(2);
+        l.insert(3);
 
-        l1 = std::move(l1);
+        List& l_ref = l;
+        l = std::move(l_ref);
 
-        CHECK(l1.size() == 3);
-        CHECK(l1.find_at(0) == 1);
+        CHECK(l.size() == 3);
+        CHECK(l.find_at(0) == 1);
     }
 }
