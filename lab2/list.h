@@ -4,9 +4,8 @@
 #include <iostream>
 #include <string>
 
-class List
-{
-public:
+class List {
+  public:
     List();
 
     // Kopieringskonstruktor
@@ -35,9 +34,8 @@ public:
     int find_at(int index) const;
     int find(int value) const;
 
-private:
-    struct Node
-    {
+  private:
+    struct Node {
         int value;
         Node *next;
     };

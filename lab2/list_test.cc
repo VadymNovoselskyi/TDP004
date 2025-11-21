@@ -2,30 +2,27 @@
 
 #include "catch.hpp"
 #include "list.h"
-#include "list.h"
 
-// Komplettering: Er kod kompilerar med varningar. 
-// Komplettering: Det saknas test för självtilldelning för 
+// Komplettering: Er kod kompilerar med varningar.
+// Komplettering: Det saknas test för självtilldelning för
 //  tilldelningsoperatorn.
 
-// Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna 
-//    organisera vad ni testar var. Ex. 
+// Kommentar: Använd gärna era sections mer uppdelat för att tydligare kunna
+//    organisera vad ni testar var. Ex.
 //    TEST_CASE("remove")
 //        SECTION("remove front ok")
 //        SECTION("remove back ok")
 //        SECTION("remove middle ok")
 //        SECTION("remove bad index")
-//    Det blir lättare att få en överblick då. 
+//    Det blir lättare att få en överblick då.
 //    Och att förstå varför vissa operationer ska lyckas, medan andra ska kasta fel.
 
 //=======================================================================
 // Test cases
 //=======================================================================
 
-TEST_CASE("Create an empty list")
-{
-    SECTION("Testing init")
-    {
+TEST_CASE("Create an empty list") {
+    SECTION("Testing init") {
         List l{};
 
         CHECK(l.is_empty());
@@ -33,10 +30,8 @@ TEST_CASE("Create an empty list")
     }
 }
 
-TEST_CASE("Insert items")
-{
-    SECTION("Default sorted insert")
-    {
+TEST_CASE("Insert items") {
+    SECTION("Default sorted insert") {
         List l{};
 
         l.insert(1);
@@ -53,8 +48,7 @@ TEST_CASE("Insert items")
         CHECK(l.size() == 3);
     }
 
-    SECTION("Unsorted insert")
-    {
+    SECTION("Unsorted insert") {
         List l{};
 
         l.insert(10);
@@ -73,10 +67,8 @@ TEST_CASE("Insert items")
     }
 }
 
-TEST_CASE("Find items")
-{
-    SECTION("Find items by index")
-    {
+TEST_CASE("Find items") {
+    SECTION("Find items by index") {
         List l{};
 
         l.insert(1);
@@ -89,8 +81,7 @@ TEST_CASE("Find items")
         CHECK_THROWS(l.find_at(999));
     }
 
-    SECTION("Find items by value")
-    {
+    SECTION("Find items by value") {
         List l{};
 
         l.insert(1);
@@ -105,10 +96,8 @@ TEST_CASE("Find items")
     }
 }
 
-TEST_CASE("Remove items")
-{
-    SECTION("Remove items by value")
-    {
+TEST_CASE("Remove items") {
+    SECTION("Remove items by value") {
         List l{};
 
         l.insert(1);
@@ -139,11 +128,9 @@ TEST_CASE("Remove items")
     }
 }
 
-TEST_CASE("Print out items list")
-{
-    SECTION("to_string")
-    {
-        List l {};
+TEST_CASE("Print out items list") {
+    SECTION("to_string") {
+        List l{};
         l.insert(1);
         l.insert(2);
         l.insert(3);
@@ -153,8 +140,7 @@ TEST_CASE("Print out items list")
         CHECK(l.to_string() == "1 -> 2 -> 3 -> 4 -> 5");
     }
 
-    SECTION("Default print")
-    {
+    SECTION("Default print") {
         std::ostringstream stream1;
         List l1{};
         l1.insert(1);
@@ -163,8 +149,7 @@ TEST_CASE("Print out items list")
         stream1 << l1;
         CHECK(stream1.str() == "1 -> 2 -> 3");
     }
-    SECTION("Empty list print")
-    {
+    SECTION("Empty list print") {
         std::ostringstream stream2;
         List l2{};
         stream2 << l2;
@@ -172,16 +157,14 @@ TEST_CASE("Print out items list")
     }
 }
 
-TEST_CASE("Constructors and operators")
-{
-    SECTION("Copy_constructor")
-    {
+TEST_CASE("Constructors and operators") {
+    SECTION("Copy_constructor") {
         List l1{};
         l1.insert(1);
         l1.insert(2);
         l1.insert(3);
 
-        List l2 {l1};
+        List l2{l1};
 
         l2.remove(1);
         l2.remove(2);
@@ -191,15 +174,14 @@ TEST_CASE("Constructors and operators")
         CHECK(l2.find_at(0) == 3);
         CHECK(l2.size() == 1);
     }
-    SECTION("Copy_assignment_operator")
-    {
+    SECTION("Copy_assignment_operator") {
         List l1{};
 
         l1.insert(1);
         l1.insert(2);
         l1.insert(3);
 
-        List l2 {};
+        List l2{};
 
         l2.insert(8);
         l2.insert(9);
@@ -218,22 +200,20 @@ TEST_CASE("Constructors and operators")
         CHECK_FALSE(l1.size() == l2.size());
     }
 
-    SECTION("Copy_assignment_operator on the same list")
-    {
+    SECTION("Copy_assignment_operator on the same list") {
         List l{};
         l.insert(1);
         l.insert(2);
         l.insert(3);
 
-        List& l_ref = l;
+        List &l_ref = l;
         l = l_ref;
 
         CHECK(l.size() == 3);
         CHECK(l.find_at(0) == 1);
     }
 
-    SECTION("Moving_constructor")
-    {
+    SECTION("Moving_constructor") {
         List l1{};
         l1.insert(1);
         l1.insert(2);
@@ -248,14 +228,13 @@ TEST_CASE("Constructors and operators")
         CHECK(l2.size() == 1);
     }
 
-    SECTION("Moving_assignment_operator")
-    {
+    SECTION("Moving_assignment_operator") {
         List l1{};
         l1.insert(1);
         l1.insert(2);
         l1.insert(3);
 
-        List l2 {};
+        List l2{};
 
         l2.insert(8);
         l2.insert(9);
@@ -271,14 +250,13 @@ TEST_CASE("Constructors and operators")
         CHECK(l2.size() == 1);
     }
 
-    SECTION("Move_assignment_operator on the same list")
-    {
+    SECTION("Move_assignment_operator on the same list") {
         List l{};
         l.insert(1);
         l.insert(2);
         l.insert(3);
 
-        List& l_ref = l;
+        List &l_ref = l;
         l = std::move(l_ref);
 
         CHECK(l.size() == 3);

@@ -1,11 +1,12 @@
-#include "ghost.h"
+#include <iomanip>
+#include <iostream>
 #include <istream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <vector>
+
+#include "ghost.h"
 
 using namespace std;
 
@@ -20,23 +21,17 @@ using namespace std;
   - Tänk på att varje funktion inte borde vara längre än 25 rader.
  */
 
-class Ghost_Tester
-{
-
-public:
-    Ghost_Tester()
-        : pacman{}, ghosts{}, mode{"chase"}
-    {
+class Ghost_Tester {
+  public:
+    Ghost_Tester() : pacman{}, ghosts{}, mode{"chase"} {
     }
 
-    void run()
-    { 
+    void run() {
         ghosts.push_back(new Blinky(this->pacman, {6, 6}));
         ghosts.push_back(new Pinky(this->pacman, {4, 8}));
         ghosts.push_back(new Clyde(this->pacman, {10, 4}));
 
-        while (true)
-        {
+        while (true) {
             this->draw_map();
 
             cout << "> ";
@@ -46,103 +41,76 @@ public:
 
             string command = this->get_command(iss);
 
-            if (command == "pos")
-            {
+            if (command == "pos") {
                 handle_pos_command(iss);
-            }
-            else if (command == "dir")
-            {
+            } else if (command == "dir") {
                 handle_dir_command(iss);
-            }
-            else if (command == "chase" || command == "scatter")
-            {
+            } else if (command == "chase" || command == "scatter") {
                 handle_mode_command(command);
-            }
-            else if (command == "quit")
-            {
+            } else if (command == "quit") {
                 handle_quit_command();
                 break;
-            }
-            else if (command == "anger")
-            {
+            } else if (command == "anger") {
                 handle_anger_command();
-            }
-            else
-            {
+            } else {
                 bool valid_command = false;
                 valid_command = handle_ghost_command(command, iss);
-                if (!valid_command)
-                {
+                if (!valid_command) {
                     cout << "Command: \"" << command << "\" is invalid command" << endl;
                 }
             }
         }
     }
 
-private:
-
-    void handle_pos_command(istringstream &iss)
-    {
+  private:
+    void handle_pos_command(istringstream &iss) {
         Point new_pos{this->get_point(iss)};
         try {
             pacman.set_position(new_pos);
-        } catch(runtime_error const& error)
-        {
+        } catch (runtime_error const &error) {
             cout << "Couldn't move the pacman: " << error.what() << endl;
         }
     }
 
-    void handle_dir_command(istringstream &iss)
-    {
+    void handle_dir_command(istringstream &iss) {
         Point new_dir{this->get_point(iss)};
         try {
             this->pacman.set_direction(new_dir);
-        } catch(runtime_error const& error)
-        {
+        } catch (runtime_error const &error) {
             cout << "Couldn't change the direction: " << error.what() << endl;
         }
     }
 
-    void handle_mode_command(string const& command)
-    {
+    void handle_mode_command(string const &command) {
         mode = command;
     }
 
-    void handle_quit_command()
-    {
-        for (Ghost *ghost : ghosts)
-        {
+    void handle_quit_command() {
+        for (Ghost *ghost : ghosts) {
             delete ghost;
         }
     }
 
-    void handle_anger_command()
-    {
-        for (Ghost* ghost : this->ghosts)
-        {
-            AngerIssueGhost* anger_issue_ghost = dynamic_cast<AngerIssueGhost*>(ghost);
-            if (anger_issue_ghost != nullptr) 
-            {
+    void handle_anger_command() {
+        for (Ghost *ghost : this->ghosts) {
+            AngerIssueGhost *anger_issue_ghost = dynamic_cast<AngerIssueGhost *>(ghost);
+            if (anger_issue_ghost != nullptr) {
                 anger_issue_ghost->set_angry(true);
             }
         }
     }
 
-    bool handle_ghost_command(string const& command, istringstream &iss)
-    {
+    bool handle_ghost_command(string const &command, istringstream &iss) {
         bool valid_command = false;
-        for (Ghost *ghost : ghosts)
-        {
-            if (ghost->get_color() != command)
-            {
+        for (Ghost *ghost : ghosts) {
+            if (ghost->get_color() != command) {
                 continue;
             }
 
             Point new_pos{this->get_point(iss)};
             try {
                 ghost->set_position(new_pos);
-            } catch(runtime_error const& error)
-            {
+            } catch (runtime_error const &error) {
                 cout << "Couldn't move the ghost: " << error.what() << endl;
                 return false;
             }
@@ -152,15 +120,13 @@ private:
         return valid_command;
     }
 
-    string get_command(istringstream &iss)
-    {
+    string get_command(istringstream &iss) {
         string command{};
         iss >> command;
         return command;
     }
 
-    Point get_point(istringstream &iss)
-    {
+    Point get_point(istringstream &iss) {
         Point new_point{};
         iss >> new_point;
         return new_point;
@@ -170,29 +136,22 @@ private:
       En hjälpfunktion som avgör vilka två tecken som ska ritas ut för en given position på
       spelplanen.
      */
-    string to_draw(Point const &curr_pos)
-    {
+    string to_draw(Point const &curr_pos) {
         string to_draw{"  "};
 
-        for (Ghost *ghost : ghosts)
-        {
-            if (ghost->get_position() == curr_pos)
-            {
+        for (Ghost *ghost : ghosts) {
+            if (ghost->get_position() == curr_pos) {
                 to_draw[0] = toupper((ghost->get_color())[0]);
             }
 
-            else if (mode == "chase" && ghost->get_chase_point() == curr_pos)
-            {
+            else if (mode == "chase" && ghost->get_chase_point() == curr_pos) {
                 to_draw[0] = tolower((ghost->get_color())[0]);
-            }
-            else if (mode == "scatter" && ghost->get_scatter_point() == curr_pos)
-            {
+            } else if (mode == "scatter" && ghost->get_scatter_point() == curr_pos) {
                 to_draw[0] = tolower((ghost->get_color())[0]);
             }
         }
 
-        if (pacman.get_position() == curr_pos)
-        {
+        if (pacman.get_position() == curr_pos) {
             to_draw[1] = '@';
         }
 
@@ -208,15 +167,12 @@ private:
       Varje punkt i kartan ritas som två tecken eftersom ett tecken i terminalen är ca dubbelt så
       högt som det är brett.
     */
-    void draw_map()
-    {
+    void draw_map() {
         cout << "+" << setfill('-') << setw(WIDTH * 2) << "-" << "+\n";
 
-        for (int y{HEIGHT - 1}; y >= 0; --y)
-        {
+        for (int y{HEIGHT - 1}; y >= 0; --y) {
             cout << "|";
-            for (int x{}; x < WIDTH; ++x)
-            {
+            for (int x{}; x < WIDTH; ++x) {
                 cout << to_draw(Point{x, y});
             }
             cout << "|\n";
@@ -231,8 +187,7 @@ private:
     string mode;
 };
 
-int main()
-{
+int main() {
     Ghost_Tester gt{};
     gt.run();
     return 0;

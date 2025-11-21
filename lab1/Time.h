@@ -1,12 +1,11 @@
 #ifndef TIME_Hh
 #define TIME_Hh
 
-#include <string>
 #include <iostream>
+#include <string>
 
-class Time
-{
-public:
+class Time {
+  public:
     Time(int hour = {}, int minute = {}, int second = {});
     Time(std::string time_string);
     std::string to_string(bool am_format = false) const;
@@ -27,7 +26,7 @@ public:
     bool operator==(Time const &rhs) const;
     bool operator!=(Time const &rhs) const;
 
-private:
+  private:
     int hour{};
     int minute{};
     int second{};
