@@ -1,13 +1,18 @@
 Checks: >
-  bugprone-*
-  ,performance-*
-  ,modernize-*
-  ,readability-*
-  ,cppcoreguidelines-*
-  ,-cppcoreguidelines-avoid-magic-numbers
-  ,-cppcoreguidelines-owning-memory
-  ,-cppcoreguidelines-pro-bounds-array-to-pointer-decay
-  ,readability-identifier-naming
+  bugprone-*,
+  performance-*,
+  modernize-*,
+  readability-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  readability-identifier-naming,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -cppcoreguidelines-avoid-const-or-ref-data-members
+
 
 WarningsAsErrors: >
   bugprone-*
