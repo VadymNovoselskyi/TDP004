@@ -1,0 +1,40 @@
+Checks: >
+  bugprone-*
+  ,performance-*
+  ,modernize-*
+  ,readability-*
+  ,cppcoreguidelines-*
+  ,-cppcoreguidelines-avoid-magic-numbers
+  ,-cppcoreguidelines-owning-memory
+  ,-cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  ,readability-identifier-naming
+
+WarningsAsErrors: >
+  bugprone-*
+  ,performance-*
+  ,modernize-*
+
+
+CheckOptions:
+  # === Naming conventions (change these to your taste) ===
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case        # local & global variables: my_variable
+    # value: camelBack        # local & global variables: myVariable
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case        # function parameters: user_id
+    # value: camelBack        # function parameters: userId
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case        # functions: do_something
+    # value: camelBack        # functions: doSomething
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase        # classes, structs: MyClass
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE       # ENUM_VALUE
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE       # const int MAX_SIZE
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case       # my_namespace
