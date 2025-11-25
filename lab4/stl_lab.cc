@@ -25,9 +25,7 @@ std::pair<std::string, std::string> parse_flag_by_delim(std::string const &strin
 
 void handle_print_flag(std::vector<std::string> const &text) {
     // OUTPUT
-    std::for_each(text.begin(), text.end(), [](std::string word) {
-        std::cout << word << " ";
-    });
+    std::for_each(text.begin(), text.end(), [](std::string word) { std::cout << word << " "; });
     std::cout.flush();
 }
 
@@ -66,13 +64,11 @@ void handle_table_flag(std::vector<std::string> const &text, int const &longest_
     std::map<std::string, int> freq_map{};
 
     // FILLING THE MAP
-    std::for_each(text.begin(), text.end(), [&freq_map](std::string word) {
-        freq_map[word]++;
-    });
+    std::for_each(text.begin(), text.end(), [&freq_map](std::string word) { freq_map[word]++; });
 
     // OUTPUT
     std::cout << std::left;
-    std::for_each(freq_map.begin(), freq_map.end(), [longest_word](std::pair<std::string, int> p) {
+    std::for_each(freq_map.begin(), freq_map.end(), [&longest_word](std::pair<std::string, int> p) {
         std::cout << std::setw(longest_word) << p.first << " " << p.second << "\n";
     });
     std::cout.flush();
@@ -123,24 +119,25 @@ int main(int argc, char *argv[]) {
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
 
-    for (auto str_arg : str_arguments) {
-        // PARSIN THE FLAG
-        auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
-        Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
+    std::for_each(
+        str_arguments.begin(), str_arguments.end(), [&longest_word, &text](std::string str_arg) {
+            // PARSIN THE FLAG
+            auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
+            Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
 
-        // HANDLING THE FLAG
-        if (arg.flag == "--print") {
-            handle_print_flag(text);
-        } else if (arg.flag == "--frequency") {
-            handle_frequency_flag(text, longest_word);
-        } else if (arg.flag == "--table") {
-            handle_table_flag(text, longest_word);
-        } else if (arg.flag == "--substitute") {
-            handle_substitute_flag(text, arg);
-        } else if (arg.flag == "--remove") {
-            handle_remove_flag(text, arg);
-        } else {
-            throw std::logic_error("Invalid flag: " + arg.flag);
-        }
-    }
+            // HANDLING THE FLAG
+            if (arg.flag == "--print") {
+                handle_print_flag(text);
+            } else if (arg.flag == "--frequency") {
+                handle_frequency_flag(text, longest_word);
+            } else if (arg.flag == "--table") {
+                handle_table_flag(text, longest_word);
+            } else if (arg.flag == "--substitute") {
+                handle_substitute_flag(text, arg);
+            } else if (arg.flag == "--remove") {
+                handle_remove_flag(text, arg);
+            } else {
+                throw std::logic_error("Invalid flag: " + arg.flag);
+            }
+        });
 }
