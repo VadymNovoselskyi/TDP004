@@ -8,11 +8,6 @@
 #include <string>
 #include <vector>
 
-struct ExtractReturn {
-    std::vector<std::string> text;
-    int longest_word;
-};
-
 struct Argument {
     std::string flag;
     std::string parameter;
@@ -23,48 +18,6 @@ struct WordFreq {
     int count;
 };
 
-// TODO: need to know size of the vector in advance
-// std::vector<std::string> text(15);
-// std::generate(text.begin(), text.end(), [&file]() {
-//     std::string garbage{};
-//     std::getline(file, garbage, ' ');
-//     return garbage;
-// });
-ExtractReturn extract_words_from_file(std::ifstream &file) {
-    std::string cur_word{};
-    int longest_word{0};
-    std::vector<std::string> text{};
-
-    // READ ALL WORD UNTIL THE 'END OF FILE'
-    while (!file.eof()) {
-        std::getline(file, cur_word, ' ');
-
-        int newline_idx{static_cast<int>(cur_word.find("\n"))};
-        // IF cur_word contains the '\n' char we need to separate it into two parts:
-        // 1. The word before
-        // 2. The '\n' char itself
-        // 3. The word after
-        if (newline_idx != static_cast<int>(cur_word.npos)) {
-            text.push_back(cur_word.substr(0, newline_idx));
-            text.push_back("\n");
-
-            // WE SHOULD ALSO CHECK IF THE WORDS BEFORE AND AFTER ARE LONG
-            longest_word = std::max(newline_idx, longest_word);
-
-            if (newline_idx + 1 != static_cast<int>(cur_word.length())) {
-                text.push_back(cur_word.substr(newline_idx + 1));
-                longest_word =
-                    std::max(static_cast<int>(cur_word.length() - newline_idx - 1), longest_word);
-            }
-        } else {
-            longest_word = std::max(static_cast<int>(cur_word.length()), longest_word);
-            text.push_back(cur_word);
-        }
-    };
-
-    return {text, longest_word};
-}
-
 std::pair<std::string, std::string> parse_flag_by_delim(std::string const &string, char delim) {
     int delimiter_idx{static_cast<int>(string.find(delim))};
     return {string.substr(0, delimiter_idx), string.substr(delimiter_idx + 1)};
@@ -73,7 +26,7 @@ std::pair<std::string, std::string> parse_flag_by_delim(std::string const &strin
 void handle_print_flag(std::vector<std::string> const &text) {
     // OUTPUT
     std::for_each(text.begin(), text.end(), [](std::string word) {
-        std::cout << word << (word == "\n" ? "" : " ");
+        std::cout << word << " ";
     });
     std::cout.flush();
 }
@@ -83,10 +36,6 @@ void handle_frequency_flag(std::vector<std::string> const &text, int const &long
 
     // FILLING THE VECTOR
     std::for_each(text.begin(), text.end(), [&freq_vector](std::string word) {
-        if (word == "\n") {
-            return;
-        }
-
         auto it = find_if(freq_vector.begin(), freq_vector.end(), [word](WordFreq wf) {
             return wf.word == word;
         });
@@ -118,10 +67,6 @@ void handle_table_flag(std::vector<std::string> const &text, int const &longest_
 
     // FILLING THE MAP
     std::for_each(text.begin(), text.end(), [&freq_map](std::string word) {
-        if (word == "\n") {
-            return;
-        }
-
         freq_map[word]++;
     });
 
@@ -166,9 +111,14 @@ int main(int argc, char *argv[]) {
     if (!file.is_open()) {
         throw std::logic_error("Error opening the file!");
     }
-    auto extract_res = extract_words_from_file(file);
-    std::vector<std::string> text = extract_res.text;
-    int longest_word = extract_res.longest_word;
+    std::vector<std::string> text = {std::istream_iterator<std::string>(file),
+                                     std::istream_iterator<std::string>()};
+    int longest_word = std::max_element(text.begin(),
+                                        text.end(),
+                                        [](std::string const &lhs, std::string const &rhs) {
+                                            return lhs.length() < rhs.length();
+                                        })
+                           ->length();
 
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
