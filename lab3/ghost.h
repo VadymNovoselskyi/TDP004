@@ -26,19 +26,7 @@ class Ghost {
     void validate_position(Point const &p) const;
 };
 
-class AngerIssueGhost : public Ghost {
-  public:
-    AngerIssueGhost(Pacman const &pacman, Point const &pos);
-    virtual ~AngerIssueGhost() = default;
-
-    bool is_angry() const;
-    void set_angry(bool angry);
-
-  protected:
-    bool angry;
-};
-
-class Blinky : public AngerIssueGhost {
+class Blinky : public Ghost {
   public:
     Blinky(Pacman const &pacman, Point const &pos);
 
@@ -46,6 +34,12 @@ class Blinky : public AngerIssueGhost {
     Point get_scatter_point() const override;
 
     std::string get_color() const override;
+
+    bool is_angry() const;
+    void set_angry(bool angry);
+
+  protected:
+    bool angry;
 };
 
 class Pinky : public Ghost {

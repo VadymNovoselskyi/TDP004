@@ -24,21 +24,16 @@ Point Ghost::get_position() const {
     return pos;
 }
 
-// AngryGhost:
-AngerIssueGhost::AngerIssueGhost(Pacman const &pacman, Point const &pos)
-    : Ghost(pacman, pos), angry{false} {
+// Blinky:
+Blinky::Blinky(Pacman const &pacman, Point const &pos) : Ghost(pacman, pos), angry{false} {
 }
 
-bool AngerIssueGhost::is_angry() const {
+bool Blinky::is_angry() const {
     return angry;
 }
 
-void AngerIssueGhost::set_angry(bool angry) {
+void Blinky::set_angry(bool angry) {
     angry = angry;
-}
-
-// Blinky:
-Blinky::Blinky(Pacman const &pacman, Point const &pos) : AngerIssueGhost(pacman, pos) {
 }
 
 Point Blinky::get_chase_point() const {
@@ -82,7 +77,8 @@ Clyde::Clyde(Pacman const &pacman, Point const &pos, int target_range)
 
 Point Clyde::get_chase_point() const {
     Point player_pos{pacman.get_position()};
-    int dist_to_player{abs(player_pos.x - pos.x) + abs(player_pos.y - pos.y)};
+    double dist_to_player{
+        sqrt(pow(abs(player_pos.x - pos.x), 2) + pow(abs(player_pos.y - pos.y), 2))};
     if (dist_to_player > target_range) {
         return player_pos;
     }

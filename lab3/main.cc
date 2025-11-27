@@ -27,19 +27,19 @@ class Ghost_Tester {
     }
 
     void run() {
-        ghosts.push_back(new Blinky(this->pacman, {6, 6}));
-        ghosts.push_back(new Pinky(this->pacman, {4, 8}));
-        ghosts.push_back(new Clyde(this->pacman, {10, 4}));
+        ghosts.push_back(new Blinky(pacman, {6, 6}));
+        ghosts.push_back(new Pinky(pacman, {4, 8}));
+        ghosts.push_back(new Clyde(pacman, {10, 4}));
 
         while (true) {
-            this->draw_map();
+            draw_map();
 
             cout << "> ";
             string line{};
             getline(cin, line);
             istringstream iss{line};
 
-            string command = this->get_command(iss);
+            string command = get_command(iss);
 
             if (command == "pos") {
                 handle_pos_command(iss);
@@ -64,20 +64,20 @@ class Ghost_Tester {
 
   private:
     void handle_pos_command(istringstream &iss) {
-        Point new_pos{this->get_point(iss)};
+        Point new_pos{get_point(iss)};
         try {
             pacman.set_position(new_pos);
         } catch (runtime_error const &error) {
-            cout << "Couldn't move the pacman: " << error.what() << endl;
+            cerr << "Couldn't move the pacman: " << error.what() << endl;
         }
     }
 
     void handle_dir_command(istringstream &iss) {
-        Point new_dir{this->get_point(iss)};
+        Point new_dir{get_point(iss)};
         try {
-            this->pacman.set_direction(new_dir);
+            pacman.set_direction(new_dir);
         } catch (runtime_error const &error) {
-            cout << "Couldn't change the direction: " << error.what() << endl;
+            cerr << "Couldn't change the direction: " << error.what() << endl;
         }
     }
 
@@ -92,10 +92,10 @@ class Ghost_Tester {
     }
 
     void handle_anger_command() {
-        for (Ghost *ghost : this->ghosts) {
-            AngerIssueGhost *anger_issue_ghost = dynamic_cast<AngerIssueGhost *>(ghost);
-            if (anger_issue_ghost != nullptr) {
-                anger_issue_ghost->set_angry(true);
+        for (Ghost *ghost : ghosts) {
+            auto blinky = dynamic_cast<Blinky *>(ghost);
+            if (blinky != nullptr) {
+                blinky->set_angry(true);
             }
         }
     }
@@ -107,11 +107,11 @@ class Ghost_Tester {
                 continue;
             }
 
-            Point new_pos{this->get_point(iss)};
+            Point new_pos{get_point(iss)};
             try {
                 ghost->set_position(new_pos);
             } catch (runtime_error const &error) {
-                cout << "Couldn't move the ghost: " << error.what() << endl;
+                cerr << "Couldn't move the ghost: " << error.what() << endl;
                 return false;
             }
             valid_command = true;
