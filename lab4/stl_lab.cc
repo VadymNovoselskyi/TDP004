@@ -23,29 +23,50 @@ std::pair<std::string, std::string> parse_flag_by_delim(std::string const &strin
     return {string.substr(0, delimiter_idx), string.substr(delimiter_idx + 1)};
 }
 
-void handle_print_flag(std::vector<std::string> const &text) {
-    // OUTPUT
-    std::for_each(text.begin(), text.end(), [](std::string word) { std::cout << word << " "; });
+std::vector<std::string> extract_unique_words(std::vector<std::string> const &text) {
+    std::vector<std::string> unique_words{};
+    std::unique_copy(text.begin(), text.end(), std::back_inserter(unique_words));
+    std::sort(unique_words.begin(), unique_words.end());
+    unique_words.erase(std::unique(unique_words.begin(), unique_words.end()), unique_words.end());
+    return unique_words;
+}
+
+std::vector<WordFreq> populate_word_freq(std::vector<std::string> const &text) {
+    auto unique_words{extract_unique_words(text)};
+    std::vector<WordFreq> freq_vector{unique_words.size()};
+
+    // POPULATING THE VECTOR
+    std::transform(
+        unique_words.begin(), unique_words.end(), freq_vector.begin(), [&text](std::string word) {
+            return WordFreq{word, static_cast<int>(std::count(text.begin(), text.end(), word))};
+        });
+    return freq_vector;
+}
+
+void output_word_freq(std::vector<WordFreq> const &freq_vector,
+                      int longest_word,
+                      bool align_right) {
+    std::transform(freq_vector.begin(),
+                   freq_vector.end(),
+                   std::ostream_iterator<std::string>(std::cout, "\n"),
+                   [longest_word, align_right](WordFreq wf) {
+                       std::string buff(longest_word - wf.word.length(), ' ');
+                       return (align_right ? "" : buff) + wf.word + (align_right ? buff : "") +
+                              " " + std::to_string(wf.count);
+                   });
     std::cout.flush();
 }
 
-void handle_frequency_flag(std::vector<std::string> const &text, int const &longest_word) {
-    std::vector<WordFreq> freq_vector{};
+// HANDLING THE FLAGS
+void handle_print_flag(std::vector<std::string> const &text) {
+    // OUTPUT
+    std::copy(text.begin(), text.end(), std::ostream_iterator<std::string>(std::cout, " "));
+    std::cout << "\n";
+    std::cout.flush();
+}
 
-    // FILLING THE VECTOR
-    std::for_each(text.begin(), text.end(), [&freq_vector](std::string word) {
-        auto it = find_if(freq_vector.begin(), freq_vector.end(), [word](WordFreq wf) {
-            return wf.word == word;
-        });
-        // IF THERE IS NO ENTRY FOR THAT WORD: PUSH NEW ONE
-        if (it == freq_vector.end()) {
-            freq_vector.push_back({word, 1});
-        }
-        // IF THERE IS A VALUE: INCREMENT ITS VALUE
-        else {
-            it->count++;
-        }
-    });
+void handle_frequency_flag(std::vector<std::string> const &text, int longest_word) {
+    auto freq_vector{populate_word_freq(text)};
 
     // SORTING
     std::sort(freq_vector.begin(), freq_vector.end(), [](WordFreq lhs, WordFreq rhs) {
@@ -53,25 +74,12 @@ void handle_frequency_flag(std::vector<std::string> const &text, int const &long
     });
 
     // OUTPUT
-    std::cout << std::right;
-    std::for_each(freq_vector.begin(), freq_vector.end(), [longest_word](WordFreq wf) {
-        std::cout << std::setw(longest_word) << wf.word << " " << wf.count << "\n";
-    });
-    std::cout.flush();
+    output_word_freq(freq_vector, longest_word, true);
 }
 
-void handle_table_flag(std::vector<std::string> const &text, int const &longest_word) {
-    std::map<std::string, int> freq_map{};
-
-    // FILLING THE MAP
-    std::for_each(text.begin(), text.end(), [&freq_map](std::string word) { freq_map[word]++; });
-
-    // OUTPUT
-    std::cout << std::left;
-    std::for_each(freq_map.begin(), freq_map.end(), [&longest_word](std::pair<std::string, int> p) {
-        std::cout << std::setw(longest_word) << p.first << " " << p.second << "\n";
-    });
-    std::cout.flush();
+void handle_table_flag(std::vector<std::string> const &text, int longest_word) {
+    auto freq_vector{populate_word_freq(text)};
+    output_word_freq(freq_vector, longest_word, false);
 }
 
 void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg) {
@@ -93,7 +101,7 @@ void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg)
 }
 
 void handle_remove_flag(std::vector<std::string> &text, Argument const &arg) {
-    text.erase(std::remove(text.begin(), text.end(), arg.parameter));
+    text.erase(std::remove(text.begin(), text.end(), arg.parameter), text.end());
 }
 
 int main(int argc, char *argv[]) {
