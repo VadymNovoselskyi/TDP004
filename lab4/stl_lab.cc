@@ -7,16 +7,13 @@
 #include <vector>
 
 struct Argument {
-    std::string flag;
-    std::string parameter;
+    std::string flag {};
+    std::string parameter {};
 };
 
 struct WordFreq {
-    std::string word;
-    int count;
-
-    WordFreq() : word(""), count(0) {}
-    WordFreq(std::string w, int c) : word(std::move(w)), count(c) {}
+    std::string word {};
+    int count {};
 };
 
 std::pair<std::string, std::string> parse_flag_by_delim(std::string const &string, char delim) {
@@ -93,12 +90,12 @@ void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg)
     std::string new_word = parsed_subs.second;
 
     if (new_word == "") {
-        throw std::logic_error("Wrong parametr type with empty substitute");
+        throw std::logic_error("Wrong parameter type with empty substitute");
     }
 
     // IF THERE IS NO + SIGN old_word will be equal to new_word somehow
     if (old_word == new_word) {
-        throw std::logic_error("Wrong parametr type with no '+' for --subsitute");
+        throw std::logic_error("Wrong parameter type with no '+' for --subsitute");
     }
 
     std::replace(text.begin(), text.end(), old_word, new_word);
