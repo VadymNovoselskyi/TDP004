@@ -1,9 +1,7 @@
 #include <algorithm>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
-#include <map>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -36,10 +34,13 @@ std::vector<WordFreq> populate_word_freq(std::vector<std::string> const &text) {
     std::vector<WordFreq> freq_vector{unique_words.size()};
 
     // POPULATING THE VECTOR
-    std::transform(
-        unique_words.begin(), unique_words.end(), freq_vector.begin(), [&text](std::string word) {
-            return WordFreq{word, static_cast<int>(std::count(text.begin(), text.end(), word))};
-        });
+    std::transform(unique_words.begin(),
+                   unique_words.end(),
+                   freq_vector.begin(),
+                   [&text](std::string const &word) {
+                       return WordFreq{
+                           word, static_cast<int>(std::count(text.begin(), text.end(), word))};
+                   });
     return freq_vector;
 }
 
@@ -49,7 +50,7 @@ void output_word_freq(std::vector<WordFreq> const &freq_vector,
     std::transform(freq_vector.begin(),
                    freq_vector.end(),
                    std::ostream_iterator<std::string>(std::cout, "\n"),
-                   [longest_word, align_right](WordFreq wf) {
+                   [longest_word, align_right](WordFreq const &wf) {
                        std::string buff(longest_word - wf.word.length(), ' ');
                        return (align_right ? "" : buff) + wf.word + (align_right ? buff : "") +
                               " " + std::to_string(wf.count);
@@ -69,7 +70,7 @@ void handle_frequency_flag(std::vector<std::string> const &text, int longest_wor
     auto freq_vector{populate_word_freq(text)};
 
     // SORTING
-    std::sort(freq_vector.begin(), freq_vector.end(), [](WordFreq lhs, WordFreq rhs) {
+    std::sort(freq_vector.begin(), freq_vector.end(), [](WordFreq const &lhs, WordFreq const &rhs) {
         return lhs.count > rhs.count;
     });
 
@@ -93,7 +94,7 @@ void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg)
     }
 
     // IF THERE IS NO + SIGN old_word will be equal to new_word somehow
-    else if (old_word == new_word) {
+    if (old_word == new_word) {
         throw std::logic_error("Wrong parametr type with no '+' for --subsitute");
     }
 
@@ -127,25 +128,26 @@ int main(int argc, char *argv[]) {
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
 
-    std::for_each(
-        str_arguments.begin(), str_arguments.end(), [&longest_word, &text](std::string str_arg) {
-            // PARSIN THE FLAG
-            auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
-            Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
+    std::for_each(str_arguments.begin(),
+                  str_arguments.end(),
+                  [&longest_word, &text](std::string const &str_arg) {
+                      // PARSIN THE FLAG
+                      auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
+                      Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
 
-            // HANDLING THE FLAG
-            if (arg.flag == "--print") {
-                handle_print_flag(text);
-            } else if (arg.flag == "--frequency") {
-                handle_frequency_flag(text, longest_word);
-            } else if (arg.flag == "--table") {
-                handle_table_flag(text, longest_word);
-            } else if (arg.flag == "--substitute") {
-                handle_substitute_flag(text, arg);
-            } else if (arg.flag == "--remove") {
-                handle_remove_flag(text, arg);
-            } else {
-                throw std::logic_error("Invalid flag: " + arg.flag);
-            }
-        });
+                      // HANDLING THE FLAG
+                      if (arg.flag == "--print") {
+                          handle_print_flag(text);
+                      } else if (arg.flag == "--frequency") {
+                          handle_frequency_flag(text, longest_word);
+                      } else if (arg.flag == "--table") {
+                          handle_table_flag(text, longest_word);
+                      } else if (arg.flag == "--substitute") {
+                          handle_substitute_flag(text, arg);
+                      } else if (arg.flag == "--remove") {
+                          handle_remove_flag(text, arg);
+                      } else {
+                          throw std::logic_error("Invalid flag: " + arg.flag);
+                      }
+                  });
 }
