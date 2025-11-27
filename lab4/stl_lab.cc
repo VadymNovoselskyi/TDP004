@@ -7,13 +7,13 @@
 #include <vector>
 
 struct Argument {
-    std::string flag {};
-    std::string parameter {};
+    std::string flag{};
+    std::string parameter{};
 };
 
 struct WordFreq {
-    std::string word {};
-    int count {};
+    std::string word{};
+    int count{};
 };
 
 std::pair<std::string, std::string> parse_flag_by_delim(std::string const &string, char delim) {
@@ -118,19 +118,21 @@ int main(int argc, char *argv[]) {
     }
     std::vector<std::string> text = {std::istream_iterator<std::string>(file),
                                      std::istream_iterator<std::string>()};
-    int longest_word = std::max_element(text.begin(),
-                                        text.end(),
-                                        [](std::string const &lhs, std::string const &rhs) {
-                                            return lhs.length() < rhs.length();
-                                        })
-                           ->length();
 
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
 
     std::for_each(str_arguments.begin(),
                   str_arguments.end(),
-                  [&longest_word, &text](std::string const &str_arg) {
+                  [&text](std::string const &str_arg) {
+                      int longest_word =
+                          std::max_element(text.begin(),
+                                           text.end(),
+                                           [](std::string const &lhs, std::string const &rhs) {
+                                               return lhs.length() < rhs.length();
+                                           })
+                              ->length();
+                              
                       // PARSIN THE FLAG
                       auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
                       Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
