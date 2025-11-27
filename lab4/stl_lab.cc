@@ -14,6 +14,9 @@ struct Argument {
 struct WordFreq {
     std::string word;
     int count;
+
+    WordFreq() : word(""), count(0) {}
+    WordFreq(std::string w, int c) : word(std::move(w)), count(c) {}
 };
 
 std::pair<std::string, std::string> parse_flag_by_delim(std::string const &string, char delim) {
