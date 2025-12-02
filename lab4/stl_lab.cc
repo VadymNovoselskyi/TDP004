@@ -6,6 +6,20 @@
 #include <string>
 #include <vector>
 
+// Information om komplettering:
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//
+//
+//   Har ni frågor om kompletteringen kan ni maila mig.
+
+// Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate called after...”. 
+// Komplettering: Felaktig hantering av undantag. Undantag bör endast kastas i exceptionella fall. 
+// Kan vi kommunicera på något annat sätt vör vi göra det.
+
+// Komplettering: Initiera alltid variabler med måsvingar.
+
 struct Argument {
     std::string flag{};
     std::string parameter{};
@@ -89,13 +103,19 @@ void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg)
     std::string old_word = parsed_subs.first;
     std::string new_word = parsed_subs.second;
 
-    if (new_word == "") {
-        throw std::logic_error("Wrong parameter type with empty substitute");
+    if (new_word.empty() || old_word.empty()) {
+    std::cout << "\n" << "Invalid input, atleast one empty paramater" << "\n" << std::endl;
+    return;
     }
 
-    // IF THERE IS NO + SIGN old_word will be equal to new_word somehow
-    if (old_word == new_word) {
-        throw std::logic_error("Wrong parameter type with no '+' for --subsitute");
+    if (arg.parameter.find('+') == std::string::npos) {
+        std::cout << "\n" << "Wrong parameter type with no '+' for --subsitute" << "\n" << std::endl;
+        return;
+    }
+
+    if(old_word + ('+') + new_word == old_word + ('+') + old_word) {
+        std::cout << "\n" << "Tried to substitute old_word with the same word" << "\n" << std::endl;
+        return;
     }
 
     std::replace(text.begin(), text.end(), old_word, new_word);
@@ -106,16 +126,19 @@ void handle_remove_flag(std::vector<std::string> &text, Argument const &arg) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        throw std::logic_error(
-            "Program use: a.out <path_to_text> <some-flag(s)>=<some_param(optional)>");
+    if (argc <= 2) {
+        std::cout << "\n" << "Invalid input, correct format: ./a.out (path to text) flag(s)=(optional paramater)"
+        << "\n" << std::endl;
+        return 0;
     }
 
-    std::ifstream file{(argv[1])};
+    try {
+        std::ifstream file{(argv[1])};
 
-    if (!file.is_open()) {
-        throw std::logic_error("Error opening the file!");
-    }
+        if (!file.is_open()) {
+            throw std::runtime_error("Error opening the file!");
+        }
+
     std::vector<std::string> text = {std::istream_iterator<std::string>(file),
                                      std::istream_iterator<std::string>()};
 
@@ -133,7 +156,7 @@ int main(int argc, char *argv[]) {
                                            })
                               ->length();
                               
-                      // PARSIN THE FLAG
+                      // PARSING THE FLAG
                       auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
                       Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
 
@@ -149,7 +172,12 @@ int main(int argc, char *argv[]) {
                       } else if (arg.flag == "--remove") {
                           handle_remove_flag(text, arg);
                       } else {
-                          throw std::logic_error("Invalid flag: " + arg.flag);
+                          std::cout << "Invalid flag: " << arg.flag << std::endl;
                       }
                   });
+    } 
+    catch (const std::runtime_error& e) {
+        std::cerr << e.what() << '\n';
+        return 1;
+    } 
 }
