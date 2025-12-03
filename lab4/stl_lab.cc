@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -14,9 +15,9 @@
 //
 //   Har ni frågor om kompletteringen kan ni maila mig.
 
-// Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate called after...”. 
-// Komplettering: Felaktig hantering av undantag. Undantag bör endast kastas i exceptionella fall. 
-// Kan vi kommunicera på något annat sätt vör vi göra det.
+// Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate
+// called after...”. Komplettering: Felaktig hantering av undantag. Undantag bör endast kastas i
+// exceptionella fall. Kan vi kommunicera på något annat sätt vör vi göra det.
 
 // Komplettering: Initiera alltid variabler med måsvingar.
 
@@ -98,23 +99,25 @@ void handle_table_flag(std::vector<std::string> const &text, int longest_word) {
 }
 
 void handle_substitute_flag(std::vector<std::string> &text, Argument const &arg) {
-    auto parsed_subs = parse_flag_by_delim(arg.parameter, '+');
+    auto parsed_subs{parse_flag_by_delim(arg.parameter, '+')};
 
-    std::string old_word = parsed_subs.first;
-    std::string new_word = parsed_subs.second;
+    std::string old_word{parsed_subs.first};
+    std::string new_word{parsed_subs.second};
 
     if (new_word.empty() || old_word.empty()) {
-    std::cout << "\n" << "Invalid input, atleast one empty paramater" << "\n" << std::endl;
-    return;
-    }
-
-    if (arg.parameter.find('+') == std::string::npos) {
-        std::cout << "\n" << "Wrong parameter type with no '+' for --subsitute" << "\n" << std::endl;
+        std::cerr << "\n" << "Invalid input, atleast one empty paramater" << "\n" << std::endl;
         return;
     }
 
-    if(old_word + ('+') + new_word == old_word + ('+') + old_word) {
-        std::cout << "\n" << "Tried to substitute old_word with the same word" << "\n" << std::endl;
+    if (arg.parameter.find('+') == std::string::npos) {
+        std::cerr << "\n"
+                  << "Wrong parameter type with no '+' for --subsitute" << "\n"
+                  << std::endl;
+        return;
+    }
+
+    if (new_word == old_word) {
+        std::cerr << "\n" << "Tried to substitute old_word with the same word" << "\n" << std::endl;
         return;
     }
 
@@ -127,57 +130,51 @@ void handle_remove_flag(std::vector<std::string> &text, Argument const &arg) {
 
 int main(int argc, char *argv[]) {
     if (argc <= 2) {
-        std::cout << "\n" << "Invalid input, correct format: ./a.out (path to text) flag(s)=(optional paramater)"
-        << "\n" << std::endl;
+        std::cerr
+            << "\n"
+            << "Invalid input, correct format: ./a.out (path to text) flag(s)=(optional paramater)"
+            << std::endl;
         return 0;
     }
 
-    try {
-        std::ifstream file{(argv[1])};
+    std::ifstream file{(argv[1])};
 
-        if (!file.is_open()) {
-            throw std::runtime_error("Error opening the file!");
-        }
+    if (!file.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return 1;
+    }
 
-    std::vector<std::string> text = {std::istream_iterator<std::string>(file),
-                                     std::istream_iterator<std::string>()};
+    std::vector<std::string> text{std::istream_iterator<std::string>(file),
+                                  std::istream_iterator<std::string>()};
 
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
 
-    std::for_each(str_arguments.begin(),
-                  str_arguments.end(),
-                  [&text](std::string const &str_arg) {
-                      int longest_word =
-                          std::max_element(text.begin(),
-                                           text.end(),
-                                           [](std::string const &lhs, std::string const &rhs) {
-                                               return lhs.length() < rhs.length();
-                                           })
-                              ->length();
-                              
-                      // PARSING THE FLAG
-                      auto parsed_str_arg = parse_flag_by_delim(str_arg, '=');
-                      Argument arg = {parsed_str_arg.first, parsed_str_arg.second};
+    std::for_each(str_arguments.begin(), str_arguments.end(), [&text](std::string const &str_arg) {
+        auto longest_word{(std::max_element(text.begin(),
+                                            text.end(),
+                                            [](std::string const &lhs, std::string const &rhs) {
+                                                return lhs.length() < rhs.length();
+                                            })
+                               ->length())};
 
-                      // HANDLING THE FLAG
-                      if (arg.flag == "--print") {
-                          handle_print_flag(text);
-                      } else if (arg.flag == "--frequency") {
-                          handle_frequency_flag(text, longest_word);
-                      } else if (arg.flag == "--table") {
-                          handle_table_flag(text, longest_word);
-                      } else if (arg.flag == "--substitute") {
-                          handle_substitute_flag(text, arg);
-                      } else if (arg.flag == "--remove") {
-                          handle_remove_flag(text, arg);
-                      } else {
-                          std::cout << "Invalid flag: " << arg.flag << std::endl;
-                      }
-                  });
-    } 
-    catch (const std::runtime_error& e) {
-        std::cerr << e.what() << '\n';
-        return 1;
-    } 
+        // PARSING THE FLAG
+        auto parsed_str_arg{parse_flag_by_delim(str_arg, '=')};
+        Argument arg{parsed_str_arg.first, parsed_str_arg.second};
+
+        // HANDLING THE FLAG
+        if (arg.flag == "--print") {
+            handle_print_flag(text);
+        } else if (arg.flag == "--frequency") {
+            handle_frequency_flag(text, longest_word);
+        } else if (arg.flag == "--table") {
+            handle_table_flag(text, longest_word);
+        } else if (arg.flag == "--substitute") {
+            handle_substitute_flag(text, arg);
+        } else if (arg.flag == "--remove") {
+            handle_remove_flag(text, arg);
+        } else {
+            std::cerr << "Invalid flag: " << arg.flag << std::endl;
+        }
+    });
 }
