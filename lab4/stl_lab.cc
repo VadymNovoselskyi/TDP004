@@ -3,9 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <stdexcept>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 // Information om komplettering:
 //   Kompletteringen kan gälla hela filen och alla filer i labben,
@@ -15,12 +15,9 @@
 //
 //   Har ni frågor om kompletteringen kan ni maila mig.
 
-// Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate
-// called after...”. Komplettering: Felaktig hantering av undantag. Undantag bör endast kastas i
-// exceptionella fall. Kan vi kommunicera på något annat sätt vör vi göra det.
-
-// Komplettering: Initiera alltid variabler med måsvingar.
-
+// Komplettering: Programmet bör avslutas vid fel som inte kan hanteras.
+// Programmet får segmentation fault ifall filen är tom.
+// identifiera kasta och fånga detta fel. 
 struct Argument {
     std::string flag{};
     std::string parameter{};
@@ -147,16 +144,27 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> text{std::istream_iterator<std::string>(file),
                                   std::istream_iterator<std::string>()};
 
+    
     // EXTRACTING ALL THE ARGS EXCEPT FOR THE FIRST 2
     std::vector<std::string> str_arguments(argv + 2, argv + argc);
 
     std::for_each(str_arguments.begin(), str_arguments.end(), [&text](std::string const &str_arg) {
-        auto longest_word{(std::max_element(text.begin(),
-                                            text.end(),
-                                            [](std::string const &lhs, std::string const &rhs) {
-                                                return lhs.length() < rhs.length();
-                                            })
-                               ->length())};
+        try {
+            if (text.empty()) {
+                throw std::runtime_error("The file is empty");
+            }
+        } 
+        
+        catch (const std::exception &e) {
+            std::cerr << e.what() << std::endl;
+            std::exit(1);
+        }
+
+        auto longest_word{(std::max_element(text.begin(), text.end(),
+                [](std::string const &lhs, std::string const &rhs) {
+                    return lhs.length() < rhs.length();
+        })
+            ->length())};
 
         // PARSING THE FLAG
         auto parsed_str_arg{parse_flag_by_delim(str_arg, '=')};
@@ -175,6 +183,17 @@ int main(int argc, char *argv[]) {
             handle_remove_flag(text, arg);
         } else {
             std::cerr << "Invalid flag: " << arg.flag << std::endl;
+            std::exit(1);
         }
     });
+
+    std::ofstream outfile{(argv[1])};
+
+    if (!outfile.is_open()) {
+        std::cerr << "Error opening the file!" << std::endl;
+        return 1;
+    }
+
+    for (const auto& i : text)
+        outfile << i << " ";
 }
