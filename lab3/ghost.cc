@@ -33,7 +33,7 @@ bool Blinky::is_angry() const {
 }
 
 void Blinky::set_angry(bool angry) {
-    angry = angry;
+    this->angry = angry;
 }
 
 Point Blinky::get_chase_point() const {
